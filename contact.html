@@ -2,25 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>SoulCoin — UBI for Healing Data</title>
+  <title>Contact — La Matriz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SoulCoin turns color-sequence journals into anonymous NFTs that fund a Universal Basic Income for healing work. Built for grants, research, and community sovereignty.">
+  <meta name="description" content="Contact La Matriz. Message Danielle Gauthier for coaching, workshops, research collaborations, and grant partnerships.">
   <link rel="preload" href="/assets/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <link rel="canonical" href="https://lamatriz.ai/soulcoin">
-  <meta property="og:title" content="SoulCoin — UBI for Healing Data">
-  <meta property="og:description" content="A circular, cyberfeminist economy: color → NFT → UBI. Anonymous, consent-driven, research-grade.">
+  <link rel="canonical" href="https://lamatriz.ai/contact">
+  <meta property="og:title" content="Contact — La Matriz">
+  <meta property="og:description" content="Private, secure contact with La Matriz founder Danielle Gauthier.">
   <meta property="og:image" content="https://lamatriz.ai/og.png">
   <meta name="theme-color" content="#0B0B0C">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
-    "@type":"Project",
-    "name":"SoulCoin",
-    "alternateName":"La Matriz SoulCoin UBI",
-    "description":"Anonymous color-sequence NFTs that reward healing labor with UBI and power a privacy-first research dataset.",
-    "url":"https://lamatriz.ai/soulcoin",
-    "keywords":["UBI","cyberfeminism","data sovereignty","mental health","NFT","color semantics"]
+    "@type":"ContactPage",
+    "name":"Contact La Matriz",
+    "url":"https://lamatriz.ai/contact",
+    "contactPoint": {
+      "@type":"ContactPoint",
+      "contactType":"inquiries",
+      "email":"danielle.gauthier@lamatriz.ai",
+      "areaServed":"Global",
+      "availableLanguage":["en"]
+    }
   }
   </script>
 </head>
@@ -35,8 +39,8 @@
       <a href="/api">API</a>
       <a href="/thesis">Thesis</a>
       <a href="/oracle">Oracle</a>
-      <a href="/soulcoin" aria-current="page">Soulcoin</a>
-      <a class="cta" href="/contact">Contact</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a class="cta" href="/contact" aria-current="page">Contact</a>
     </nav>
   </div>
 </header>
@@ -47,115 +51,90 @@
   <section class="hero">
     <div class="container">
       <div>
-        <h1>SoulCoin: a UBI for healing, minted from color.</h1>
-        <p>Users journal feelings → generate color sequences → mint anonymous NFTs → receive Universal Basic Income. Data remains consent-driven and privacy-first on the SoulCoin chain, closing the loop between care and livelihood. <!-- :contentReference[oaicite:0]{index=0} --><!-- :contentReference[oaicite:1]{index=1} --></p>
+        <h1>Contact Danielle</h1>
+        <p>Questions, collaborations, or press? Use the secure form or email directly at
+          <a href="mailto:danielle.gauthier@lamatriz.ai">danielle.gauthier@lamatriz.ai</a>.
+        </p>
         <div class="cta-group">
-          <a class="btn primary" href="/contact">Discuss a grant partnership</a>
-          <a class="btn ghost" href="/thesis">Read the research</a>
+          <a class="btn primary" href="mailto:danielle.gauthier@lamatriz.ai">Email Danielle</a>
+          <a class="btn ghost" href="#form">Use the secure form</a>
         </div>
+        <p class="meta" style="margin-top:10px;color:#B7BCCD">No trackers. We keep messages confidential and minimal by default. See <a href="/privacy">Privacy</a>.</p>
       </div>
-      <div id="mini-demo" aria-label="SoulCoin overview">
-        <div class="meta">Consent-driven, encrypted interactions stored on the SoulCoin blockchain database; data should give back. <!-- :contentReference[oaicite:2]{index=2} --><!-- :contentReference[oaicite:3]{index=3} --></div>
-        <div class="swatch" role="img" aria-label="Chromatic field preview"></div>
-        <div class="meta">Color → NFT → UBI: a circular, sovereign economy. <!-- :contentReference[oaicite:4]{index=4} --></div>
-      </div>
+
+      <!-- Founder card -->
+      <article class="card" style="padding:0; overflow:hidden">
+        <div style="display:grid; grid-template-columns:140px 1fr; gap:0">
+          <img src="/assets/img/danielle-gauthier.jpg" alt="Portrait of Danielle Gauthier" width="140" height="140" style="object-fit:cover; width:140px; height:140px;">
+          <div style="padding:14px">
+            <h3 style="margin-bottom:6px">Danielle Gauthier — Founder</h3>
+            <p class="meta" style="margin-bottom:8px;color:#B7BCCD">La Matriz Consulting</p>
+            <p>Danielle creates tools for feeling-informed decision-making. Her work at La Matriz centers <em>Semantic Color Math</em>—a method that maps moods, memories, and habits into color sequences—powering the Color Oracle (GPT) and SoulCoin, a cyberfeminist UBI experiment for healing data. She brings a trauma-informed, decolonial practice to product, research, and organizational change.</p>
+            <div class="cta-group" style="margin-top:10px">
+              <a class="btn ghost" href="/oracle">Try the Oracle</a>
+              <a class="btn ghost" href="/soulcoin">Explore SoulCoin</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
     </div>
   </section>
 
-  <!-- Visual model -->
-  <section class="grid">
+  <!-- Contact form -->
+  <section class="grid" id="form">
     <div class="container">
-      <article class="card" style="grid-column:1/-1">
-        <h2>Modular Visual System</h2>
-        <p>The stack aligns a semantic color layer, a GPT interaction layer, and a blockchain infrastructure layer into one participatory system.</p>
-        <img src="/assets/img/visual-system.png" alt="Three-layer stack: Color Math, GPT Interface, SoulCoin Blockchain" style="width:100%;border-radius:12px;border:1px solid var(--border)">
-      </article>
-    </div>
-  </section>
+      <article class="card" style="grid-column:1/-1;">
+        <h2>Send a secure message</h2>
+        <form id="contact-form" action="/contact/submit" method="POST" novalidate>
+          <!-- CSRF placeholder for your server to verify -->
+          <input type="hidden" name="csrf" id="csrf">
+          <!-- Timezone & page -->
+          <input type="hidden" name="tz" id="tz">
+          <input type="hidden" name="page" value="/contact">
+          <!-- Honeypot -->
+          <div class="visually-hidden" aria-hidden="true">
+            <label>Company <input type="text" name="company" autocomplete="organization"></label>
+          </div>
 
-  <!-- How it works -->
-  <section class="grid">
-    <div class="container">
-      <article class="card" style="grid-column:1/-1">
-        <h2>Flow of value: journal → color → NFT → UBI</h2>
-        <img src="/assets/img/refinement-loop.png" alt="User journey flowchart from check-in to UBI and archive contribution" style="width:100%;border-radius:12px;border:1px solid var(--border)">
-        <ul class="footer-nav" style="margin-top:12px">
-          <li>1) Check-in: user enters text/voice/art; color math maps sentiment. <!-- :contentReference[oaicite:5]{index=5} --></li>
-          <li>2) NFT mint: sequence + minimal metadata → anonymous smart contract (e.g., Secret Network). <!-- :contentReference[oaicite:6]{index=6} --></li>
-          <li>3) UBI credit: SoulCoin pays micro-stipends for emotional labor & data sovereignty. <!-- :contentReference[oaicite:7]{index=7} --></li>
-          <li>4) Healing archive (optional anonymity) → research dataset that improves care. <!-- :contentReference[oaicite:8]{index=8} --></li>
-        </ul>
-      </article>
-    </div>
-  </section>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required maxlength="120" autocomplete="name" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);">
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" inputmode="email" required maxlength="160" autocomplete="email" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);">
+            </div>
+          </div>
 
-  <!-- NFT → UBI mechanics -->
-  <section class="grid">
-    <div class="container">
-      <article class="card">
-        <h3>What’s minted</h3>
-        <p>Each NFT encodes: an 11-step color sequence, timestamp, coarse location (optional), and user-selected tags (e.g., rest, grief, courage). It is non-identifying by design and permissioned for research access tiers.</p>
-      </article>
-      <article class="card">
-        <h3>Payment policy</h3>
-        <p>UBI disburses per consented entry, with periodic bonuses for reflection loops and community rituals. The goal is economic dignity for healing work—not extractive surveillance. <!-- :contentReference[oaicite:9]{index=9} --></p>
-      </article>
-      <article class="card">
-        <h3>Privacy / Security</h3>
-        <p>All interactions are encrypted, consent-driven, and stored on the SoulCoin blockchain database; institutional access is anonymized and audited. <!-- :contentReference[oaicite:10]{index=10} --></p>
-      </article>
-    </div>
-  </section>
+          <div style="margin-top:12px">
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" maxlength="160" placeholder="Coaching inquiry, workshop, research, press, etc." style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);">
+          </div>
 
-  <!-- Why grants (cyberfeminism lens) -->
-  <section class="grid">
-    <div class="container">
-      <article class="card" style="grid-column:1/-1">
-        <h2>Why fund this work (for cyberfeminist grantmakers)</h2>
-        <p>SoulCoin operationalizes cyberfeminist principles—sovereignty, plurality, care—into infrastructure. It transforms data practices from extraction to relation by paying people for the labor of self-knowledge, while building a plural, anonymized research commons. The platform is multi-modal (text, voice, image, color), consent-driven, and explicitly designed for communities historically misread by clinical and computational systems. <!-- :contentReference[oaicite:11]{index=11} --></p>
-        <p>Your grant dollars seed an economy where ritualized check-ins produce living policy datasets and direct income—replacing pathologizing metrics with community-led sense-making. <!-- :contentReference[oaicite:12]{index=12} --></p>
-      </article>
-    </div>
-  </section>
+          <div style="margin-top:12px">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="7" required maxlength="5000" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);" placeholder="How can we help? Please avoid sharing sensitive details."></textarea>
+          </div>
 
-  <!-- TAM & GTM -->
-  <section class="grid">
-    <div class="container">
-      <article class="card">
-        <h3>Total Addressable Market (Module 5)</h3>
-        <p><strong>TAM:</strong> <span id="tam-figure">DATA-TAM-FROM-SLIDE</span>. (Use the Module 5 slide deck figure, not the paper’s $166.25M.) <!-- :contentReference[oaicite:13]{index=13} --><!-- :contentReference[oaicite:14]{index=14} --></p>
-        <p>Sector mix: public health grants/pilots, AI research licensing, NGO subscriptions, and enterprise customizations, reflecting our multi-stakeholder model. <!-- :contentReference[oaicite:15]{index=15} --></p>
-      </article>
-      <article class="card">
-        <h3>GTM & Sales Cycle</h3>
-        <p>University DMU and procurement require staged engagement across advocates, IRB/legal/CISO, budget approval, and contracting; plan for 6–9 months from discovery to close. <!-- :contentReference[oaicite:16]{index=16} --></p>
-        <p><strong>COCA (pilot):</strong> ~$662k total; ≈$132.4k per initial client across 5 clients (sales, legal/IT, UI/UX, exec time, conferences, travel). <!-- :contentReference[oaicite:17]{index=17} --></p>
-      </article>
-    </div>
-  </section>
+          <!-- Lightweight challenge -->
+          <div style="margin-top:12px; display:flex; gap:12px; align-items:center">
+            <label for="captcha" id="captchaLabel">What is 2 + 3?</label>
+            <input id="captcha" name="captcha" type="text" inputmode="numeric" pattern="^[0-9]+$" required style="max-width:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);">
+          </div>
 
-  <!-- Institutional value -->
-  <section class="grid">
-    <div class="container">
-      <article class="card">
-        <h3>For researchers & public institutions</h3>
-        <p>Access an anonymized, richly layered dataset (text, voice, visuals, emotional tone, symbolic metadata) under rigorous privacy standards; publish insights that loop back to improve user care. <!-- :contentReference[oaicite:18]{index=18} --></p>
-      </article>
-      <article class="card">
-        <h3>For communities</h3>
-        <p>Earn UBI for emotional labor, keep agency over data, and co-author a healing archive that informs equitable interventions. <!-- :contentReference[oaicite:19]{index=19} --></p>
-      </article>
-    </div>
-  </section>
+          <div class="cta-group" style="margin-top:16px">
+            <button class="btn primary" type="submit">Send message</button>
+            <a class="btn ghost" href="mailto:danielle.gauthier@lamatriz.ai">Email instead</a>
+          </div>
 
-  <!-- CTA -->
-  <section class="cta-band">
-    <div class="container">
-      <h2>Let’s build a cyberfeminist UBI for healing.</h2>
-      <div class="actions">
-        <a class="btn primary" href="/contact">Propose a grant or pilot</a>
-        <a class="btn ghost" href="/thesis">Read the thesis</a>
-      </div>
+          <p class="meta" style="margin-top:10px;color:#B7BCCD">
+            By sending, you consent to us storing your message for follow-up (max 90 days). We don’t sell or share your data. See our <a href="/privacy">Privacy</a>.
+          </p>
+          <div id="form-status" role="status" class="meta" style="margin-top:8px;color:#B7BCCD"></div>
+        </form>
+      </article>
     </div>
   </section>
 
@@ -168,8 +147,8 @@
       <a href="/api">API</a>
       <a href="/thesis">Thesis</a>
       <a href="/oracle">Oracle</a>
-      <a href="/soulcoin" aria-current="page">Soulcoin</a>
-      <a href="/contact">Contact</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a href="/contact" aria-current="page">Contact</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
     </nav>
@@ -188,7 +167,33 @@
       btn.setAttribute('aria-expanded', String(open));
     });
   }());
+
+  // Year, timezone, CSRF placeholder
   document.getElementById('y').textContent = new Date().getFullYear();
+  document.getElementById('tz').value = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+
+  // Simple math challenge
+  (function () {
+    const a = Math.floor(Math.random()*6)+2;   // 2–7
+    const b = Math.floor(Math.random()*6)+2;   // 2–7
+    const sum = a + b;
+    const label = document.getElementById('captchaLabel');
+    label.textContent = `What is ${a} + ${b}?`;
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    const csrf = document.getElementById('csrf');
+    csrf.value = (Math.random().toString(36).slice(2) + Date.now().toString(36));
+    form.addEventListener('submit', (e) => {
+      const hp = form.querySelector('input[name="company"]').value;
+      const ans = document.getElementById('captcha').value.trim();
+      if (hp) { e.preventDefault(); return; } // bot likely
+      if (String(sum) !== ans) {
+        e.preventDefault();
+        status.textContent = 'Please solve the math check to send.';
+        document.getElementById('captcha').focus();
+      }
+    });
+  }());
 </script>
 
 </body>
