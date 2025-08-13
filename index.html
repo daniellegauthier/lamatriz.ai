@@ -16,19 +16,282 @@
 </head>
 
 <main>
-  <section class="hero">
-    <h1>Color intelligence for people, products, and systems.</h1>
-    <p>Deterministic models + human‑centered tools for better color decisions.</p>
-    <div class="cta-group">
-      <a class="btn primary" href="/api">Explore the Color API</a>
-      <a class="btn ghost" href="/consulting">Consulting</a>
+ <section class="hero">
+  <h1>Color intelligence for people, products, and systems.</h1>
+  <p>Deterministic models + human-centered tools for better color decisions.</p>
+  <div class="cta-group">
+    <a class="btn primary" href="/api">Explore the Color API</a>
+    <a class="btn ghost" href="/consulting">Consulting</a>
+  </div>
+
+  <!-- Mini-demo (enhanced) -->
+  <div id="mini-demo" aria-live="polite">
+    <label for="demoInput" class="visually-hidden">Type a feeling or situation</label>
+    <input id="demoInput" type="text" placeholder="Type a feeling or situation (e.g., 'inspired but not creative')">
+    <div class="meta" id="demoSeeds" style="margin-top:8px"></div>
+
+    <!-- sequence chips -->
+    <div id="seq" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px"></div>
+
+    <!-- momentum bars -->
+    <div style="margin-top:8px">
+      <div class="meta">Momentum (distance between steps, 0–255)</div>
+      <div id="momentum" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;height:64px"></div>
     </div>
-    <div id="mini-demo" aria-live="polite">
-      <input type="text" placeholder="Type an emotion or paste a #hex" />
-      <div class="swatch" role="img" aria-label="Color preview"></div>
-      <div class="meta">Hue • Chroma • Value • Emotion</div>
-    </div>
-  </section>
+
+    <!-- words aligned to each RGB -->
+    <div id="seqWords" class="meta" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<script>
+/* ================= La Matriz — Client-side Semantic Color Math mini-demo =================
+   Ports your Python pipeline to JS (no external libs).
+   - Fetch CSV mapping → build word<->RGB maps
+   - Preprocess input → tokens (stopwords + light lemmatizer)
+   - Seed selection (w/ similarity fallback)
+   - Generate coherent RGB sequence (length=6)
+   - Compute momentum (Euclidean deltas)
+   - Render sequence + momentum bars + top words
+============================================================================= */
+
+const CSV_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/semantic_rgb_mapping-7Fyy0MQQFX3s6KmXIryYY5kH3cG2qk.csv";
+
+const ui = {
+  input: document.getElementById('demoInput'),
+  seq: document.getElementById('seq'),
+  momentum: document.getElementById('momentum'),
+  words: document.getElementById('seqWords'),
+  seeds: document.getElementById('demoSeeds')
+};
+
+// --- Basic stopwords (client-side) ---
+const STOP = new Set(("a,an,the,of,for,and,or,but,with,without,from,to,into,over,under,on,in,by,about,as,at,be,is,are,was,were,am,been,being,do,does,did,doing,have,has,had,having,i,me,my,our,ours,us,we,you,your,yours,he,him,his,she,her,hers,they,them,their,theirs,it,its,this,that,these,those,not,no,so,if,than,then,there,here,can,could,should,would,will,just,really,very,more,most,less,lot,lots").split(','));
+
+// --- light lemmatizer (plural/ing/ed) ---
+function lemma(w){
+  if (/ies$/.test(w)) return w.replace(/ies$/,'y');
+  if (/([sxz]|[cs]h)es$/.test(w)) return w.replace(/es$/,'');
+  if (/s$/.test(w) && !/ss$/.test(w)) return w.replace(/s$/,'');
+  if (/ing$/.test(w) && w.length>5) return w.replace(/ing$/,'');
+  if (/ed$/.test(w) && w.length>4) return w.replace(/ed$/,'');
+  return w;
+}
+
+function tokenize(text){
+  const words = (text.toLowerCase().match(/[a-z]+/g) || [])
+    .filter(w => w.length>1 && !STOP.has(w))
+    .map(lemma);
+  return words;
+}
+
+// --- CSV parsing robust to quotes ---
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const headers = splitCSVLine(lines[0]);
+  const rows = [];
+  for (let i=1;i<lines.length;i++){
+    const cells = splitCSVLine(lines[i]);
+    if (!cells.length) continue;
+    const obj = {};
+    headers.forEach((h,idx)=> obj[h]=cells[idx] ?? '');
+    rows.push(obj);
+  }
+  return rows;
+
+  function splitCSVLine(line){
+    const out=[]; let cur=''; let q=false;
+    for (let i=0;i<line.length;i++){
+      const ch = line[i];
+      if (ch === '"'){ q = !q; continue; }
+      if (ch === ',' && !q){ out.push(cur); cur=''; }
+      else { cur += ch; }
+    }
+    out.push(cur);
+    return out;
+  }
+}
+
+// --- Global maps/data ---
+let semantic = [];                 // {R,G,B, Original Words, New Words}
+let word2rgb = new Map();          // "word" -> [R,G,B]
+let rgb2words = new Map();         // "R_G_B" -> [word,...]
+let rgbRows = [];                  // [[R,G,B], ...]
+
+async function init(){
+  try{
+    const res = await fetch(CSV_URL, {mode:'cors'});
+    const txt = await res.text();
+    semantic = parseCSV(txt)
+      .map(row => ({ 
+        R: +row['R'], G:+row['G'], B:+row['B'],
+        orig: row['Original Words']||'', news: row['New Words']||''
+      }))
+      .filter(r => Number.isFinite(r.R) && Number.isFinite(r.G) && Number.isFinite(r.B));
+
+    for (const row of semantic){
+      const rgbKey = `${row.R}_${row.G}_${row.B}`;
+      const words = (row.orig + ',' + row.news)
+        .split(',')
+        .map(w => w.trim().toLowerCase())
+        .filter(Boolean);
+      for (const w of words){ word2rgb.set(w, [row.R,row.G,row.B]); }
+      rgb2words.set(rgbKey, words);
+      rgbRows.push([row.R,row.G,row.B]);
+    }
+  }catch(e){
+    console.warn('Semantic CSV load failed:', e);
+  }
+}
+init();
+
+// --- Similarity fallback (overlap + prefix) ---
+const allSemanticWords = () => Array.from(word2rgb.keys());
+function similarWords(tokens, limit=3){
+  const out = [];
+  const vocab = allSemanticWords();
+  for (const t of tokens){
+    const scores = [];
+    for (const w of vocab){
+      if (w.length < 3) continue;
+      const setT = new Set(t), setW = new Set(w);
+      const overlap = [...setT].filter(ch => setW.has(ch)).length / new Set([...setT,...setW]).size;
+      let pref=0; for (let i=0;i<Math.min(t.length,w.length);i++) if (t[i]===w[i]) pref++;
+      pref = pref / Math.max(t.length, w.length);
+      const score = 0.6*overlap + 0.4*pref;
+      if (score > 0.3) scores.push([w, score]);
+    }
+    scores.sort((a,b)=>b[1]-a[1]);
+    for (const [w] of scores.slice(0,limit)) out.push(w);
+  }
+  return out;
+}
+
+// --- Analyzer: counts + top 3 seeds ---
+function analyze(tokens){
+  const counts = {};
+  for (const t of tokens) counts[t] = (counts[t]||0)+1;
+  let seeds = tokens.filter(t => word2rgb.has(t));
+  if (seeds.length < 3) seeds = seeds.concat(similarWords(tokens));
+  seeds = seeds.filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);
+  return {counts, seeds};
+}
+
+// --- Helpers ---
+function nearestRGB(target){
+  let best = null, bestD = Infinity;
+  for (const rgb of rgbRows){
+    const d = (rgb[0]-target[0])**2 + (rgb[1]-target[1])**2 + (rgb[2]-target[2])**2;
+    if (d < bestD){ bestD = d; best = rgb; }
+  }
+  return best || target;
+}
+function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+
+// --- Sequence generation (coherence≈0.7, length=6) ---
+function generateSequence(seeds, length=6, coherence=0.7){
+  const seedRGBs = seeds.map(w => word2rgb.get(w)).filter(Boolean);
+  let current = seedRGBs.length ? seedRGBs[Math.floor(Math.random()*seedRGBs.length)] 
+                                : rgbRows[Math.floor(Math.random()*rgbRows.length)];
+  const seq = [current];
+  for (let i=1;i<length;i++){
+    if (Math.random() < coherence){
+      const variation = randInt(10,50);
+      const cand = [
+        Math.max(0, Math.min(255, current[0] + randInt(-variation, variation))),
+        Math.max(0, Math.min(255, current[1] + randInt(-variation, variation))),
+        Math.max(0, Math.min(255, current[2] + randInt(-variation, variation)))
+      ];
+      current = nearestRGB(cand);
+    }else{
+      current = rgbRows[Math.floor(Math.random()*rgbRows.length)];
+    }
+    seq.push(current);
+  }
+  return seq;
+}
+
+// --- Momentum (distance & normalized direction) ---
+function momentum(seq){
+  const out=[];
+  for (let i=1;i<seq.length;i++){
+    const prev=seq[i-1], curr=seq[i];
+    const dir = [curr[0]-prev[0], curr[1]-prev[1], curr[2]-prev[2]];
+    const mag = Math.hypot(dir[0],dir[1],dir[2]);
+    const norm = mag ? dir.map(d=>d/mag) : [0,0,0];
+    out.push({distance: mag, direction: dir, normalized_direction: norm, magnitude: mag});
+  }
+  return out;
+}
+
+// --- Rendering ---
+function rgbStyle(rgb){ return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`; }
+function render(seq, mom){
+  ui.seq.innerHTML = '';
+  ui.momentum.innerHTML = '';
+  ui.words.innerHTML = '';
+
+  seq.forEach((rgb, i) => {
+    const cell = document.createElement('div');
+    cell.style.height='76px';
+    cell.style.borderRadius='10px';
+    cell.style.border='1px solid var(--border)';
+    cell.style.background = rgbStyle(rgb);
+    cell.title = `#${rgb.map(v=>v.toString(16).padStart(2,'0')).join('')}`;
+    ui.seq.appendChild(cell);
+
+    // bars (mom has length seq-1)
+    const barWrap = document.createElement('div');
+    if (i < mom.length){
+      const bar = document.createElement('div');
+      bar.style.height = `${Math.max(2, (mom[i].magnitude/255)*100)}%`;
+      bar.style.background = 'var(--accent-2)'; // yellow
+      bar.style.border = '1px solid var(--border)';
+      bar.style.borderRadius = '6px';
+      barWrap.appendChild(bar);
+    }
+    ui.momentum.appendChild(barWrap);
+  });
+
+  // attach up to two words per color
+  const labels = seq.map(rgb => {
+    const key = `${rgb[0]}_${rgb[1]}_${rgb[2]}`;
+    const words = (rgb2words.get(key) || []).slice(0,2);
+    return words.length ? words.join(', ') : '';
+  });
+  ui.words.textContent = labels.some(Boolean) ? labels.map((w,i)=> `${i+1}: ${w}`).join('  •  ') : '…';
+
+}
+
+// --- Orchestrate on input (debounced) ---
+let tId=null;
+function run(text){
+  if (!semantic.length){ renderPlaceholder(text); return; }
+  const tokens = tokenize(text);
+  const {seeds} = analyze(tokens);
+  ui.seeds.textContent = seeds.length ? `Seeds: ${seeds.join(', ')}` : 'Seeds: (auto)';
+  const seq = generateSequence(seeds);
+  const mom = momentum(seq);
+  render(seq, mom);
+}
+function renderPlaceholder(text){
+  // fallback gradient chips
+  const seq = Array.from({length:6}, (_,i)=>[randInt(0,255), randInt(0,255), randInt(0,255)]);
+  const mom = momentum(seq);
+  ui.seeds.textContent = 'Seeds: (loading model…)';
+  render(seq, mom);
+}
+
+ui.input?.addEventListener('input', () => {
+  clearTimeout(tId);
+  const value = ui.input.value.trim();
+  tId = setTimeout(()=> run(value || 'inspired but not creative'), 280);
+});
+ui.input?.addEventListener('keydown', (e)=>{ if (e.key==='Enter'){ run(ui.input.value.trim()); }});
+
+// initial render
+run('inspired but not creative');
+</script>
 
   <section class="grid">
     <!-- 6 cards as described above -->
