@@ -72,9 +72,12 @@
           <a href="#introduction">Introduction</a>
           <a href="#oracle">La Matriz Consulting Color Oracle GPT</a>
           <a href="#method">Method</a>
-          <a href="#pathways">Pathways (11)</a>
+          <a href="#sentiment-color">Sentiment × Color</a>
           <a href="#tree">Decision Tree (MSE)</a>
           <a href="#concept-space">Concept Space Map</a>
+          <a href="#variance">RGB Range &amp; Variance</a>
+          <a href="#pathways">Pathways (11)</a>
+          <a href="#loop-filter">Loop Filter</a>
           <a href="#core-hypothesis">Core Hypothesis</a>
           <a href="#evaluation">Evaluation Framework</a>
           <a href="#what-is">What Is La Matriz?</a>
@@ -120,18 +123,24 @@
     </div>
   </section>
 
-  <!-- NEW: Pathways -->
-  <section class="grid" id="pathways">
-    <div class="container">
-      <article class="card" style="grid-column:1/-1">
-        <h2>Pathways (11)</h2>
-        <p>Each pathway is a repeatable <em>trajectory</em> through color space. Below you’ll find the canonical color sequence for each, a placeholder image (<code>“x pathway.png”</code>), and an editable space to summarize the felt movement.</p>
-        <div id="pathwaysGrid" class="grid-list" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:12px"></div>
-      </article>
-    </div>
-  </section>
+<!-- SENTIMENT × COLOR DISTRIBUTIONS -->
+<section class="grid" id="sentiment-color">
+  <div class="container">
+    <article class="card" style="grid-column:1/-1">
+      <h2>Sentiment score distributions by closest color</h2>
+      <p><strong>ELI5:</strong> We group every point by the color it sits closest to in RGB space, then look at how the feeling scores spread. Each color forms its own “emotional fingerprint.”</p>
 
-  <!-- NEW: Decision Tree (MSE) -->
+      <figure style="margin:0">
+        <img src="/assets/img/analysis/sentiment%20distribution.png" alt="Density curves of sentiment scores grouped by closest color" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        <figcaption class="meta" style="margin-top:6px">
+          Notice the tight spike for <em>yellow</em> (narrow band of feeling) versus wider spreads for <em>blue</em> and <em>green</em>. This hints at subtle, measurable links between color and sentiment—useful for choosing which hues to nudge when guiding mood.
+        </figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+   <!-- NEW: Decision Tree (MSE) -->
   <section class="grid" id="tree">
     <div class="container">
       <article class="card" style="grid-column:1/-1">
@@ -184,6 +193,60 @@
     </div>
   </section>
 
+<!-- RANGE & VARIANCE TABLE -->
+<section class="grid" id="variance">
+  <div class="container">
+    <article class="card" style="grid-column:1/-1">
+      <h2>Per-sequence RGB range &amp; variance</h2>
+      <p><strong>ELI5:</strong> Range tells us how far a sequence can travel in each color channel; variance tells us how much it actually <em>moves</em>. Big ranges/variances = exploratory journeys. Small ones = focused, almost monochrome rituals.</p>
+
+      <figure style="margin:0">
+        <img src="/assets/img/analysis/variance%20sequences.jpg" alt="Table showing RGB range and variance per pathway and overall" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+        <figcaption class="meta" style="margin-top:6px">
+          <em>knot</em> and <em>masc</em> roam across the full spectrum; <em>pain</em> and <em>practical</em> stay tight and minimal. These stats help pick a pathway: do we need breadth (exploration) or focus (precision)?
+        </figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+
+  <!-- NEW: Pathways -->
+  <section class="grid" id="pathways">
+    <div class="container">
+      <article class="card" style="grid-column:1/-1">
+        <h2>Pathways (11)</h2>
+        <p>Each pathway is a repeatable <em>trajectory</em> through color space. Below you’ll find the canonical color sequence for each, a placeholder image (<code>“x pathway.png”</code>), and an editable space to summarize the felt movement.</p>
+        <div id="pathwaysGrid" class="grid-list" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:12px"></div>
+      </article>
+    </div>
+  </section>
+
+    <!-- LOOP FILTER -->
+<section class="grid" id="loop-filter">
+  <div class="container">
+    <article class="card" style="grid-column:1/-1">
+      <h2>Loop Filter — kept vs. filtered</h2>
+      <p><strong>ELI5:</strong> Imagine tracing your walk with a crayon. A <em>loop</em> is where your path curves back near where you started. Some loops are meaningful (a real circle of feeling). Others are tiny stubs caused by noise. The plots below help us tell them apart so only the good circles remain.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <figure style="margin:0">
+          <img src="/assets/img/analysis/filtered%20UMAP%20for%20loops.png" alt="UMAP plot showing kept loops (black circles) and filtered stubs (grey Xs)" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+          <figcaption class="meta" style="margin-top:6px">
+            Black-circled points mark loops we keep; grey Xs are “stubby” loops we filter out as likely false positives. Cleaning these makes the real cyclic pathways stand out.
+          </figcaption>
+        </figure>
+
+        <figure style="margin:0">
+          <img src="/assets/img/analysis/UMAP%20update.png" alt="UMAP paths colored by sequence with potential loop markers" style="width:100%;border-radius:12px;border:1px solid var(--border)">
+          <figcaption class="meta" style="margin-top:6px">
+            Colored paths show each pathway’s motion in UMAP space. Circles highlight potential loops to examine with care practices rather than only stats.
+          </figcaption>
+        </figure>
+      </div>
+    </article>
+  </div>
+</section>
   <!-- Core Hypothesis -->
   <section class="proof" id="core-hypothesis">
     <div class="container">
