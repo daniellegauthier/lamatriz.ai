@@ -82,6 +82,26 @@ body{
   border-radius:6px;
 }
 
+/* Header/logo tweaks */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 1.05rem; /* keeps layout if image fails */
+}
+.logo img {
+  height: 44px;          /* responsive visual size */
+  width: auto;
+  display: block;
+  border-radius: 8px;    /* soft corners to match brand texture */
+}
+@media (max-width: 640px) {
+  .logo img { height: 36px; }
+}
+
+
 /* ---------- Header & Navigation ---------- */
 header{
   position: sticky; top:0; z-index:100;
