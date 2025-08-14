@@ -62,38 +62,72 @@
       </div>
     </div>
   </section>
+<!-- In-page nav + Color Clusters -->
+<section class="grid" aria-label="On this page">
+  <div class="container">
+    <!-- Contents -->
+    <article class="card" style="grid-column: span 3;">
+      <h3>Contents</h3>
+      <nav class="footer-nav" aria-label="Thesis sections">
+        <a href="#introduction">Introduction</a>
+        <a href="#oracle">La Matriz Consulting Color Oracle GPT</a>
+        <a href="#method">Method</a>
+        <a href="#sentiment-color">Sentiment × Color</a>
+        <a href="#tree">Decision Tree (MSE)</a>
+        <a href="#concept-space">Concept Space Map</a>
+        <a href="#variance">RGB Range &amp; Variance</a>
+        <a href="#pathways">Pathways (11)</a>
+        <a href="#loop-filter">Loop Filter</a>
+        <a href="#core-hypothesis">Core Hypothesis</a>
+        <a href="#evaluation">Evaluation Framework</a>
+        <a href="#what-is">What Is La Matriz?</a>
+        <a href="#soulcoin">SoulCoin Vision</a>
+        <a href="#influences">Influences</a>
+        <a href="#questions">Reader Questions</a>
+      </nav>
+    </article>
 
-  <!-- In-page nav -->
-  <section class="grid" aria-label="On this page">
-    <div class="container">
-      <article class="card">
-        <h3>Contents</h3>
-        <nav class="footer-nav" aria-label="Thesis sections">
-          <a href="#introduction">Introduction</a>
-          <a href="#oracle">La Matriz Consulting Color Oracle GPT</a>
-          <a href="#method">Method</a>
-          <a href="#sentiment-color">Sentiment × Color</a>
-          <a href="#tree">Decision Tree (MSE)</a>
-          <a href="#concept-space">Concept Space Map</a>
-          <a href="#variance">RGB Range &amp; Variance</a>
-          <a href="#pathways">Pathways (11)</a>
-          <a href="#loop-filter">Loop Filter</a>
-          <a href="#core-hypothesis">Core Hypothesis</a>
-          <a href="#evaluation">Evaluation Framework</a>
-          <a href="#what-is">What Is La Matriz?</a>
-          <a href="#soulcoin">SoulCoin Vision</a>
-          <a href="#influences">Influences</a>
-          <a href="#questions">Reader Questions</a>
-        </nav>
-      </article>
-    </div>
-  </section>
+    <!-- Color Clusters figure -->
+    <article class="card" style="grid-column: span 3;">
+      <figure style="margin:0">
+        <img
+          src="/assets/img/color clusters.png"
+          alt="3D scatter of colors by cluster in RGB space (five labeled groups)"
+          loading="lazy"
+          style="width:100%;border-radius:12px;border:1px solid var(--border)"
+        >
+        <figcaption class="meta" style="margin-top:8px">
+          Five clusters in RGB space hint at distinct color families and their affective neighborhoods:
+          <br><strong>C0</strong> (warm gold, avg RGB 250,200,0) — luminous/lotiform edge;
+          <strong>C1</strong> (blue–green–black, avg 0,85,85) — cool/intelligent belt;
+          <strong>C2</strong> (pink–red–brown, avg 228,17,30) — vivid/forthright spectrum;
+          <strong>C3</strong> (purple, avg 180,50,255) — imaginative/high-B axis;
+          <strong>C4</strong> (grey–nude–orange–white–yellow, avg 236,194,109) — neutral-to-warm commons.
+        </figcaption>
+      </figure>
 
+      <!-- Optional expandable detail (keeps the page clean) -->
+      <details class="meta" style="margin-top:8px">
+        <summary>Cluster notes (colors, sentiments, averages)</summary>
+        <ul style="margin-top:6px">
+          <li><strong>Cluster 0 (1 color):</strong> gold · top sentiments: lotiform, preflorating, undepartable, technocracy, apophantic · avg RGB (250, 200, 0)</li>
+          <li><strong>Cluster 1 (3 colors):</strong> blue, green, black · top sentiments: daintily, bulbous, swabble, intelligent, paleoatavistic · avg RGB (0, 85, 85)</li>
+          <li><strong>Cluster 2 (3 colors):</strong> pink, red, brown · top sentiments: and, abundantly, ambitious, apophantic, candid · avg RGB (~228, 16.7, 30)</li>
+          <li><strong>Cluster 3 (1 color):</strong> purple · top sentiments: brave, perfectly, imaginative, great, gifted · avg RGB (180, 50, 255)</li>
+          <li><strong>Cluster 4 (5 colors):</strong> grey, nude, orange, white, yellow · top sentiments: analeptical, awesome, authority, artesian, apposite · avg RGB (236, 194, 109)</li>
+        </ul>
+      </details>
+    </article>
+  </div>
+</section>
+
+
+  
   <!-- Introduction -->
   <section class="grid" id="introduction">
     <div class="container">
       <article class="card" style="grid-column:1/-1">
-        <h2>🌈 Introduction (Reimagined with Expanded Cosmology)</h2>
+        <h2>Thesis Introduction</h2>
         <p>In an age where mental health systems like the DSM-V increasingly pathologize behavior, something is lost when human suffering is reduced to risk metrics—stripped from the historical and emotional ecosystems in which it arises. Our data and mental health systems often surveil rather than understand, treating distress as deviation or consumable opportunity, rather than signal of social rupture.</p>
       </article>
     </div>
@@ -127,8 +161,8 @@
 <section class="grid" id="sentiment-color">
   <div class="container">
     <article class="card" style="grid-column:1/-1">
-      <h2>Sentiment score distributions by closest color</h2>
-      <p><strong>ELI5:</strong> We group every point by the color it sits closest to in RGB space, then look at how the feeling scores spread. Each color forms its own “emotional fingerprint.”</p>
+      <h2>Sentiment Ccore Distributions by Closest Color</h2>
+      <p>I grouped every point by the color it sits closest to in RGB space, then looked at how the feeling scores spread. Each color forms its own “emotional fingerprint.”</p>
 
       <figure style="margin:0">
         <img src="/assets/img/sentiment distribution.png" alt="Density curves of sentiment scores grouped by closest color" style="width:100%;border-radius:12px;border:1px solid var(--border)">
@@ -187,7 +221,7 @@
               </ul>
             </li>
           </ul>
-          <p>This echoes your observation: <em>“when the semantic similarity gets lower as the word gets higher I actually feel like that represents the sentiment of the word geometrically.”</em> The geometry shows that increasing one color channel moves the point away from the pure-concept axes—a Penrose-style curvature away from origin.</p>
+          <p>When the semantic similarity gets lower as the word gets higher, that represents the sentiment of the word geometrically. The geometry shows that increasing one color channel moves the point away from the pure-concept axes, a Penrose-style curvature away from origin.</p>
         </div>
       </article>
     </div>
@@ -198,7 +232,7 @@
   <div class="container">
     <article class="card" style="grid-column:1/-1">
       <h2>Per-sequence RGB range &amp; variance</h2>
-      <p><strong>ELI5:</strong> Range tells us how far a sequence can travel in each color channel; variance tells us how much it actually <em>moves</em>. Big ranges/variances = exploratory journeys. Small ones = focused, almost monochrome rituals.</p>
+      <p>Range tells us how far a sequence can travel in each color channel; variance tells us how much it actually <em>moves</em>. Big ranges/variances = exploratory journeys. Small ones = focused, almost monochrome rituals.</p>
 
       <figure style="margin:0">
         <img src="/assets/img/variance sequences.jpg" alt="Table showing RGB range and variance per pathway and overall" style="width:100%;border-radius:12px;border:1px solid var(--border)">
@@ -216,7 +250,7 @@
     <div class="container">
       <article class="card" style="grid-column:1/-1">
         <h2>Pathways (11)</h2>
-        <p>Each pathway is a repeatable <em>trajectory</em> through color space. Below you’ll find the canonical color sequence for each, a placeholder image (<code>“x pathway.png”</code>), and an editable space to summarize the felt movement.</p>
+        <p>Each pathway is a repeatable <em>trajectory</em> through color space. Below you’ll find the color sequence for each, an image (<code>“x pathway.png”</code>), and a summary of the trajectory of movement.</p>
         <div id="pathwaysGrid" class="grid-list" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:12px"></div>
       </article>
     </div>
@@ -355,7 +389,7 @@
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
     </nav>
-    <div class="footer-meta">© <span id="y"></span> La Matriz · No trackers.</div>
+    <div class="footer-meta">© <span id="y"></span> La Matriz ·</div>
   </div>
 </footer>
 
@@ -373,6 +407,227 @@
   // Year stamp
   document.getElementById('y').textContent = new Date().getFullYear();
 
+<script>
+  // ---------- Pathways data & render (with summaries) ----------
+  const pathways = {
+    plot: ['grey','pink','gold','nude','orange'],
+    knot: ['white','blue','green','red','black','brown','yellow','purple'],
+    pain: ['gold','orange'],
+    practical: ['yellow','green'],
+    spiritual: ['blue','brown'],
+    prayer: ['nude','white'],
+    sad: ['purple','grey','red'],
+    precise: ['pink','black'],
+    fem: ['brown','gold','orange','pink'],
+    masc: ['red','blue','orange'],
+    direct: ['red','orange'],
+  };
+
+  // Color tokens used for chips
+  const colorHex = {
+    grey:'#9aa0a6', pink:'#f472b6', gold:'#eab308', nude:'#f2d0a9', orange:'#fb923c',
+    white:'#ffffff', blue:'#60a5fa', green:'#22c55e', red:'#ef4444', black:'#111827',
+    brown:'#8b5e34', yellow:'#fde047', purple:'#a78bfa'
+  };
+
+  // Per-color sentiment/subjectivity (from your analysis)
+  const colorStats = {
+    grey:[0.50,0.77], pink:[0.62,0.88], gold:[0.00,0.00], nude:[0.55,0.95], orange:[0.95,0.95],
+    white:[0.00,0.00], blue:[0.90,0.95], green:[0.65,0.90], red:[0.45,0.55], black:[0.00,0.00],
+    brown:[0.44,0.75], yellow:[0.50,0.50], purple:[0.68,0.86]
+  };
+
+  // Full pathway summaries (ELI5-format but keeping your voice & numbers)
+  const pathwaySummaries = {
+    plot: `
+    <details open>
+      <summary><strong>Overview:</strong> 5 colors (grey→pink→gold→nude→orange). Positive progression; avg sentiment ≈ <strong>0.53</strong>.</summary>
+      <ul class="meta">
+        <li><strong>grey</strong> (0.50/0.77) — “precary” · respectful, apposite.</li>
+        <li><strong>pink</strong> (0.62/0.88) — “ambitious” · exquisite, energetic.</li>
+        <li><strong>gold</strong> (0.00/0.00) — “technocracy/lotiform”.</li>
+        <li><strong>nude</strong> (0.55/0.95) — “unextenuable” · deft, satisfied.</li>
+        <li><strong>orange</strong> (0.95/0.95) — “blurry/ artesian” · awesome.</li>
+      </ul>
+      <p class="meta"><strong>Transitions:</strong> grey→pink +0.12 · pink→gold −0.62 · gold→nude +0.55 · nude→orange +0.40.</p>
+      <p>This is an improving arc: from precarious poise to artesian brightness. A story of resolution and growth.</p>
+      <p class="meta"><em>Use cases:</em> wellness journeys, growth narratives, product “problem → solution” arcs.</p>
+    </details>`,
+
+    knot: `
+    <details>
+      <summary><strong>Overview:</strong> 8 colors (white→blue→green→red→black→brown→yellow→purple). Gentle uplift; avg sentiment ≈ <strong>0.45</strong>.</summary>
+      <ul class="meta">
+        <li>white (0.00/0.00) — “analeptical”.</li>
+        <li>blue (0.90/0.95) — “photopathy” · intelligent, deep.</li>
+        <li>green (0.65/0.90) — “bulbous/heroic” · balanced growth.</li>
+        <li>red (0.45/0.55) — “apophantic” · candid, radiant.</li>
+        <li>black (0.00/0.00) — “swabble”.</li>
+        <li>brown (0.44/0.75) — notable, earthy.</li>
+        <li>yellow (0.50/0.50) — authority, plausible.</li>
+        <li>purple (0.68/0.86) — brave, imaginative.</li>
+      </ul>
+      <p class="meta"><strong>Transitions:</strong> white→blue +0.90 · blue→green −0.25 · green→red −0.20 · red→black −0.45 · black→brown +0.44 · brown→yellow +0.06 · yellow→purple +0.18.</p>
+      <p>A knot you travel through: light→knowledge→challenge→dark→earth→civic→imagination. Perseverance into creative resolve.</p>
+      <p class="meta"><em>Use cases:</em> long-form rites of passage, organizational change, multi-phase workshops.</p>
+    </details>`,
+
+    pain: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (gold→orange). Strong positive jump; avg sentiment ≈ <strong>0.47</strong>.</summary>
+      <ul class="meta">
+        <li>gold (0.00/0.00) — technocracy/lotiform.</li>
+        <li>orange (0.95/0.95) — artesian/awesome.</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> gold→orange +0.95 (strong positive).</p>
+      <p>From institutional hardness to warm vitality. Naming pain → releasing pressure → choosing warmth.</p>
+    </details>`,
+
+    practical: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (yellow→green). Steady uplift; avg sentiment ≈ <strong>0.57</strong>.</summary>
+      <ul class="meta">
+        <li>yellow (0.50/0.50) — redressible authority.</li>
+        <li>green (0.65/0.90) — heroic balance.</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> +0.15 (positive).</p>
+      <p>From clarity/decision to grounded growth. A pragmatic ritual pathway.</p>
+    </details>`,
+
+    spiritual: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (blue→brown). Downshift; avg sentiment ≈ <strong>0.67</strong>.</summary>
+      <ul class="meta">
+        <li>blue (0.90/0.95) — intelligent calm.</li>
+        <li>brown (0.44/0.75) — notable, earthy.</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> −0.46 (strong negative).</p>
+      <p>From vast sky to soil. An invitation to groundness and limits—devotional, not depressive.</p>
+    </details>`,
+
+    prayer: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (nude→white). Downshift; avg sentiment ≈ <strong>0.28</strong>.</summary>
+      <ul class="meta">
+        <li>nude (0.55/0.95) — deft, satisfied.</li>
+        <li>white (0.00/0.00) — analeptical neutrality.</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> −0.55 (strong negative).</p>
+      <p>A quieting: from embodied warmth to blank clarity. A clearing before the next act.</p>
+    </details>`,
+
+    sad: `
+    <details>
+      <summary><strong>Overview:</strong> 3 colors (purple→grey→red). Downshift; avg sentiment ≈ <strong>0.54</strong>.</summary>
+      <ul class="meta">
+        <li>purple (0.68/0.86) — brave imagination.</li>
+        <li>grey (0.50/0.77) — precarity, restraint.</li>
+        <li>red (0.45/0.55) — candid heat.</li>
+      </ul>
+      <p class="meta"><strong>Transitions:</strong> purple→grey −0.18 · grey→red −0.05.</p>
+      <p>From courageous vision to grounded heaviness to honest heat. A grief-to-truth arc.</p>
+    </details>`,
+
+    precise: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (pink→black). Sharp downshift; avg sentiment ≈ <strong>0.31</strong>.</summary>
+      <ul class="meta">
+        <li>pink (0.62/0.88) — ambitious, exquisite.</li>
+        <li>black (0.00/0.00) — swabble (null).</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> −0.62 (strong negative).</p>
+      <p>From flourish to void. A precise cut that ends rumination—use when you need a hard stop.</p>
+    </details>`,
+
+    fem: `
+    <details>
+      <summary><strong>Overview:</strong> 4 colors (brown→gold→orange→pink). Stable overall; avg sentiment ≈ <strong>0.50</strong>.</summary>
+      <ul class="meta">
+        <li>brown (0.44/0.75) → gold (0.00/0.00) → orange (0.95/0.95) → pink (0.62/0.88)</li>
+      </ul>
+      <p class="meta"><strong>Transitions:</strong> brown→gold −0.44 · gold→orange +0.95 · orange→pink −0.32.</p>
+      <p>Earth → institution → flame → flourish. A cyclical, fertile cadence.</p>
+    </details>`,
+
+    masc: `
+    <details>
+      <summary><strong>Overview:</strong> 3 colors (red→blue→orange). Upward; avg sentiment ≈ <strong>0.77</strong>.</summary>
+      <ul class="meta">
+        <li>red (0.45/0.55) → blue (0.90/0.95) → orange (0.95/0.95)</li>
+      </ul>
+      <p class="meta"><strong>Transitions:</strong> red→blue +0.45 · blue→orange +0.05.</p>
+      <p>Heat → clarity → radiance. A decisive, generative trajectory.</p>
+    </details>`,
+
+    direct: `
+    <details>
+      <summary><strong>Overview:</strong> 2 colors (red→orange). Upward; avg sentiment ≈ <strong>0.70</strong>.</summary>
+      <ul class="meta">
+        <li>red (0.45/0.55) → orange (0.95/0.95)</li>
+      </ul>
+      <p class="meta"><strong>Transition:</strong> +0.50 (strong positive).</p>
+      <p>Straight from assertion to warmth. Minimal steps, maximal lift.</p>
+    </details>`
+  };
+
+  function chip(color){
+    const hex = colorHex[color] || '#888';
+    const el = document.createElement('span');
+    el.title = color;
+    Object.assign(el.style, {
+      display:'inline-block', width:'18px', height:'18px', borderRadius:'6px',
+      border:'1px solid var(--border)', background:hex, boxShadow:'inset 0 0 0 1px rgba(0,0,0,.08)', marginRight:'6px'
+    });
+    el.setAttribute('aria-label', `${color} swatch`);
+    return el;
+  }
+
+  function statBadge(name){
+    const s = colorStats[name];
+    if(!s) return '';
+    return `<span class="meta" style="margin-left:6px;color:var(--muted)">S:${s[0].toFixed(2)} · Subj:${s[1].toFixed(2)}</span>`;
+  }
+
+  function renderPathways(){
+    const grid = document.getElementById('pathwaysGrid');
+    if(!grid) return;
+    Object.entries(pathways).forEach(([name, seq]) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+
+      const h = document.createElement('h3');
+      h.innerHTML = `${name} pathway ${statBadge(seq[0])}`;
+      card.appendChild(h);
+
+      const chips = document.createElement('div');
+      chips.style.display = 'flex';
+      chips.style.flexWrap = 'wrap';
+      chips.style.gap = '6px';
+      chips.style.margin = '6px 0 10px';
+      seq.forEach(c => chips.appendChild(chip(c)));
+      card.appendChild(chips);
+
+      const img = document.createElement('img');
+      img.src = `/assets/img/${encodeURIComponent(name + ' pathway.png')}`;
+      img.alt = `${name} pathway diagram`;
+      Object.assign(img.style, { width:'100%', borderRadius:'12px', border:'1px solid var(--border)' });
+      img.loading = 'lazy';
+      img.onerror = () => { img.alt = `${name} pathway diagram (image pending)`; img.style.background = 'linear-gradient(135deg,#6EE7F2,#B983FF)'; img.style.height = '180px'; };
+      card.appendChild(img);
+
+      const p = document.createElement('div');
+      p.className = 'summary';
+      p.innerHTML = pathwaySummaries[name] || '<em>Summary coming soon.</em>';
+      card.appendChild(p);
+
+      grid.appendChild(card);
+    });
+  }
+
+  renderPathways();
+</script>
+
+  
   // ---------- Pathways data & render ----------
   const pathways = {
     'plot': ['grey', 'pink', 'gold', 'nude', 'orange'],
