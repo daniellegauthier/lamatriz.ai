@@ -172,21 +172,315 @@
   });
 }());
 
-/* Copy starter prompt */
-document.getElementById('copyPrompt')?.addEventListener('click', () => {
-  const prompt = [
-    "Given my feeling/situation: (insert here), generate the original 11 chromatic sequences.",
-    "For each sequence, add a short reading and 1–2 rituals or actions.",
-    "End by asking which sequence resonates and offer a next step."
-  ].join(" ");
-  navigator.clipboard.writeText(prompt).then(() => {
-    const btn = document.getElementById('copyPrompt');
-    btn.textContent = "Copied ✓";
-    setTimeout(() => (btn.textContent = "Copy a starter prompt"), 1200);
-  });
+/* Copy Colab Python engine */
+document.getElementById('copyPrompt')?.addEventListener('click', async () => {
+  const pyCode = `# Magnetism-to-Color Sequence Engine — Colab Dashboard (la Matriz)
+#
+# Drop your three CSVs into the Colab runtime or point the paths below to your files:
+#  - semantic_rgb_mapping_with_sentiment.csv
+#  - la matrice.csv
+#  - la matrice sequences.csv
+#
+# Then run all cells. Use the sliders to explore Origin/Mass/Magnetism/Null Time.
+
+import os
+import io
+import json
+import math
+import textwrap
+from typing import List, Dict, Any, Tuple
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import display, Markdown
+import ipywidgets as W
+
+# ===============
+# 1) Load Data
+# ===============
+
+# Update these if needed
+SEM_PATH = 'semantic_rgb_mapping_with_sentiment.csv'
+MATRIX_PATH = 'la matrice.csv'
+SEQ_PATH = 'la matrice sequences.csv'
+
+sem = pd.read_csv(SEM_PATH)
+mat = pd.read_csv(MATRIX_PATH)
+seqs = pd.read_csv(SEQ_PATH)
+
+# Basic cleaning / derived fields
+
+def _parse_words(s: str) -> List[str]:
+    if isinstance(s, str):
+        parts = [p.strip().lower() for p in s.replace('/', ',').replace(';', ',').split(',')]
+        return [p for p in parts if p]
+    return []
+
+sem['words'] = sem['Original Words'].apply(_parse_words)
+sem['color_name'] = sem['Closest Color'].astype(str).str.strip().str.lower()
+sem['sentiment_norm'] = (sem['Sentiment Score'] - sem['Sentiment Score'].mean()) / (sem['Sentiment Score'].std() + 1e-9)
+
+# Origin = closest to neutral sentiment (≈ 0)
+origin_idx = (sem['sentiment_norm'].abs()).idxmin()
+
+# Small helpers
+
+def _jaccard(a: List[str], b: List[str]) -> float:
+    sa, sb = set(a), set(b)
+    if not sa and not sb:
+        return 0.0
+    return len(sa & sb) / max(1, len(sa | sb))
+
+# HSV utilities
+
+def _rgb_to_hsv(r, g, b):
+    r, g, b = r/255.0, g/255.0, b/255.0
+    mx, mn = max(r, g, b), min(r, g, b)
+    df = mx - mn
+    if df == 0: h = 0
+    elif mx == r: h = (60 * ((g - b) / df) + 360) % 360
+    elif mx == g: h = (60 * ((b - r) / df) + 120) % 360
+    else: h = (60 * ((r - g) / df) + 240) % 360
+    s = 0 if mx == 0 else df / mx
+    v = mx
+    return h, s, v
+
+
+def _hsv_to_rgb(h, s, v):
+    h = h % 360
+    c = v * s
+    x = c * (1 - abs((h / 60) % 2 - 1))
+    m = v - c
+    if   0 <= h < 60:  rp, gp, bp = c, x, 0
+    elif 60 <= h < 120: rp, gp, bp = x, c, 0
+    elif 120 <= h < 180: rp, gp, bp = 0, c, x
+    elif 180 <= h < 240: rp, gp, bp = 0, x, c
+    elif 240 <= h < 300: rp, gp, bp = x, 0, c
+    else:                rp, gp, bp = c, 0, x
+    r, g, b = (rp + m), (gp + m), (bp + m)
+    return int(round(r*255)), int(round(g*255)), int(round(b*255))
+
+
+def _apply_mass(rgb: Tuple[int, int, int], mass: float) -> Tuple[int, int, int]:
+    """Mass ∈ [-1, 1] — scales saturation/value (per your Potential Energy idea)."""
+    h, s, v = _rgb_to_hsv(*rgb)
+    s = np.clip(s * (1 + 0.75*mass), 0, 1)
+    v = np.clip(v * (1 + 0.50*mass), 0, 1)
+    return _hsv_to_rgb(h, s, v)
+
+
+def _similarity(i: int, j: int, alpha: float=0.6) -> float:
+    # Combine sentiment proximity and word-cluster overlap
+    ds = abs(sem.at[i, 'sentiment_norm'] - sem.at[j, 'sentiment_norm'])
+    sent_sim = 1 - (ds / (abs(sem['sentiment_norm']).max() + 1e-9))
+    word_sim = _jaccard(sem.at[i,'words'], sem.at[j,'words'])
+    return float(alpha*sent_sim + (1-alpha)*word_sim)
+
+
+def _choose_next(current_idx: int, charge: float, rng: np.random.Generator) -> int:
+    # Attraction ~ charge / distance, distance := 1 - similarity
+    sims = np.array([_similarity(current_idx, j) for j in range(len(sem))], dtype=float)
+    dist = 1 - sims
+    with np.errstate(divide='ignore'):
+        attraction = charge / np.maximum(dist, 1e-3)
+    attraction[current_idx] = 0
+    w = np.maximum(attraction, 0)
+    if w.sum() == 0:
+        return int(rng.integers(0, len(sem)))
+    probs = w / w.sum()
+    return int(rng.choice(len(sem), p=probs))
+
+
+def _neutral_indices():
+    candidates = {'grey','gray','white','nude','beige'}
+    idx = [i for i,c in enumerate(sem['color_name']) if isinstance(c,str) and c.lower() in candidates]
+    if not idx:
+        order = np.argsort(np.abs(sem['sentiment_norm'].values))
+        idx = order[:5].tolist()
+    return idx
+
+
+def _narrative_for(name: str) -> str:
+    row = mat[mat['color'].astype(str).str.lower()==str(name).lower()].head(1)
+    if row.empty:
+        return ''
+    parts = [str(row['matrice1'].values[0]), str(row['matrice'].values[0]), str(row['english-words-code'].values[0])]
+    return ", ".join([p for p in parts if p and p != 'nan'])
+
+# =============================
+# 2) Core Generator (Algorithm)
+# =============================
+
+def generate_sequence(length: int=16, seed: int=7, mass: float=0.4, voltage: float=0.6, charge: float=0.8, null_time_bias: float=0.25,
+                      start_color: str|None=None) -> List[Dict[str,Any]]:
+    """
+    origin      → neutral sentiment index (or closest color to start_color)
+    mass        → scales saturation & value ("luminous" energy)
+    magnetism   → implemented via similarity attraction weighted by \`charge\`
+    null time   → insert low-arousal rests with neutrals, probability rises as |sentiment| ↓
+    voltage     → pacing; here slightly boosts charge (faster state changes)
+    """
+    rng = np.random.default_rng(seed)
+
+    # pick start / origin
+    if start_color:
+        cands = sem[sem['color_name'] == str(start_color).strip().lower()]
+        start_idx = int(cands.index[0]) if len(cands) else int(origin_idx)
+    else:
+        start_idx = int(origin_idx)
+
+    seq: List[Dict[str,Any]] = []
+    current_idx = start_idx
+    neutrals = _neutral_indices()
+
+    for t in range(length):
+        row = sem.loc[current_idx]
+        rgb = (int(row['R']), int(row['G']), int(row['B']))
+        rgb_mass = _apply_mass(rgb, mass)
+        item = {
+            't': t,
+            'name': row['color_name'],
+            'rgb': rgb_mass,
+            'base_rgb': rgb,
+            'sentiment': float(row['Sentiment Score']),
+            'words': row['words'],
+            'narrative': _narrative_for(row['color_name'])
+        }
+        seq.append(item)
+
+        # Null Time: insert rest step with neutral color based on low magnitude
+        magnitude = abs(row['sentiment_norm'])
+        p_rest = null_time_bias * (1 - magnitude)
+        if rng.random() < p_rest:
+            ni = int(rng.choice(neutrals))
+            nrow = sem.loc[ni]
+            nrgb = (int(nrow['R']), int(nrow['G']), int(nrow['B']))
+            seq.append({
+                't': t + 0.5,
+                'name': nrow['color_name'],
+                'rgb': _apply_mass(nrgb, mass*0.2),  # softer rest
+                'base_rgb': nrgb,
+                'sentiment': float(nrow['Sentiment Score']),
+                'words': nrow['words'],
+                'narrative': _narrative_for(nrow['color_name']) + ' (rest)'
+            })
+
+        # Next state by magnetism (attraction in sentiment/word space)
+        current_idx = _choose_next(current_idx, charge*(1+0.4*voltage), rng)
+
+    return seq
+
+# =========================
+# 3) Visualization + Export
+# =========================
+
+def visualize_sequence(seq: List[Dict[str,Any]], title: str='Magnetism-to-Color Sequence'):
+    n = len(seq)
+    h = 40
+    img = np.zeros((h, n, 3), dtype=np.float32)
+    for i, item in enumerate(seq):
+        r, g, b = item['rgb']
+        img[:, i, 0] = r/255.0
+        img[:, i, 1] = g/255.0
+        img[:, i, 2] = b/255.0
+    plt.figure(figsize=(max(6, n/3), 2))
+    plt.imshow(img, aspect='auto')
+    plt.axis('off')
+    plt.title(title)
+    plt.show()
+
+
+def sequence_dataframe(seq: List[Dict[str,Any]]) -> pd.DataFrame:
+    return pd.DataFrame([
+        {
+            'step': i,
+            't': item['t'],
+            'color': item['name'],
+            'rgb': item['rgb'],
+            'sentiment': item['sentiment'],
+            'narrative': item['narrative']
+        } for i, item in enumerate(seq)
+    ])
+
+
+def export_json(seq: List[Dict[str,Any]]) -> str:
+    payload = {
+        'version': 1,
+        'engine': 'magnetism-to-color',
+        'sequence': seq,
+    }
+    s = json.dumps(payload, ensure_ascii=False, indent=2)
+    return s
+
+# =====================
+# 4) Interactive Widget
+# =====================
+
+mass_w = W.FloatSlider(value=0.4, min=-1.0, max=1.0, step=0.05, description='Mass')
+voltage_w = W.FloatSlider(value=0.6, min=0.0, max=1.0, step=0.05, description='Voltage')
+charge_w = W.FloatSlider(value=0.8, min=0.1, max=2.0, step=0.05, description='Charge')
+null_w = W.FloatSlider(value=0.25, min=0.0, max=0.9, step=0.05, description='Null Time')
+length_w = W.IntSlider(value=16, min=4, max=64, step=1, description='Length')
+seed_w = W.IntSlider(value=3, min=0, max=99, step=3, description='Seed')
+start_w = W.Text(value='', description='Start Color')
+
+run_btn = W.Button(description='Generate', button_style='primary')
+export_btn = W.Button(description='Export JSON')
+
+out = W.Output()
+json_out = W.Output()
+
+def _on_run(_):
+    with out:
+        out.clear_output()
+        seq = generate_sequence(length_w.value, seed_w.value, mass_w.value, voltage_w.value, charge_w.value, null_w.value, start_w.value or None)
+        visualize_sequence(seq, title=f"Seq L={length_w.value} M={mass_w.value:.2f} V={voltage_w.value:.2f} C={charge_w.value:.2f} N={null_w.value:.2f}")
+        display(sequence_dataframe(seq).head(20))
+
+        # quick narrative print
+        narr = [f"{i:02d} — {s['name']} — {s['narrative']}" for i, s in enumerate(seq)]
+        display(Markdown("**Narrative Overlay (first 20 steps)**\\n\\n" + "\\n".join(narr[:20])))
+
+    export_btn.on_click(lambda __: _on_export(seq))
+
+
+def _on_export(seq):
+    with json_out:
+        json_out.clear_output()
+        s = export_json(seq)
+        print(s)
+
+run_btn.on_click(_on_run)
+
+ui = W.VBox([
+    W.HBox([mass_w, voltage_w, charge_w]),
+    W.HBox([null_w, length_w, seed_w]),
+    W.HBox([start_w, run_btn, export_btn]),
+    out,
+    json_out,
+])
+
+display(ui)
+
+# Tip: Start with Start Color = 'gold' or 'grey' to feel the Origin shift.
+`;
+
+  const btn = document.getElementById('copyPrompt');
+  try {
+    await navigator.clipboard.writeText(pyCode);
+    btn.textContent = "Python copied ✓";
+  } catch {
+    // Fallback if clipboard API is blocked
+    const ta = document.createElement('textarea');
+    ta.value = pyCode; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = "Python copied ✓";
+  }
+  setTimeout(() => (btn.textContent = "Copy Colab engine"), 1400);
 });
 
-/* Sequence preview (deterministic from input) */
+/* Sequence preview (kept as-is, deterministic from input) */
 const seqEl = document.getElementById('sequence');
 const input = document.getElementById('oracle-input');
 const genBtn = document.getElementById('gen');
@@ -210,6 +504,7 @@ function hashString(s) {
 function hsl(h, s, l) { return `hsl(${h} ${s}% ${l}%)`; }
 
 function renderSequence(text) {
+  if (!seqEl) return;
   seqEl.innerHTML = "";
   const seed = text?.trim() ? hashString(text.trim()) : Math.floor(Math.random()*2**32);
   const rand = xorshift32(seed);
@@ -224,7 +519,7 @@ function renderSequence(text) {
     cell.style.border = "1px solid var(--border)";
     cell.style.background = hsl(H, S, L);
     cell.setAttribute("role", "img");
-    cell.setAttribute("aria-label", `Color ${i+1}: hue ${H} degrees, saturation ${S} percent, lightness ${L} percent`);
+    cell.setAttribute("aria-label", `Color ${i+1}: hue ${H}°, saturation ${S}%, lightness ${L}%`);
     const cap = document.createElement('div');
     cap.textContent = `${i+1}`;
     cap.style.fontSize = "12px";
@@ -238,7 +533,7 @@ function renderSequence(text) {
 }
 
 genBtn?.addEventListener('click', () => renderSequence(input.value));
-clrBtn?.addEventListener('click', () => { input.value=''; seqEl.innerHTML=''; });
+clrBtn?.addEventListener('click', () => { if (input) input.value=''; if (seqEl) seqEl.innerHTML=''; });
 input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { renderSequence(input.value); }});
 
 /* Year stamp */
