@@ -94,9 +94,45 @@
         <h2>Preview a color sequence</h2>
         <p>Type a few words (e.g., “tired but hopeful before a hard conversation”). This local preview seeds hues from your text and physical inputs to illustrate how a sequence can look.</p>
         <div class="cta-group">
-          <input id="oracle-input" type="text" placeholder="Type your feeling or situation…" aria-label="Oracle input" style="flex:1;min-width:260px">
-          <button class="btn primary" id="gen">Generate</button>
-          <button class="btn ghost" id="clear">Clear</button>
+          <!-- Magnetism controls -->
+<div id="oracle-controls" class="meta" style="margin-top:10px;display:grid;gap:10px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+    <label>Mass
+      <input id="mass" type="range" min="-1" max="1" step="0.05" value="0.4">
+      <span id="massVal" style="margin-left:6px;">0.40</span>
+    </label>
+    <label>Voltage
+      <input id="voltage" type="range" min="0" max="1" step="0.05" value="0.6">
+      <span id="voltageVal" style="margin-left:6px;">0.60</span>
+    </label>
+    <label>Charge (magnetism)
+      <input id="charge" type="range" min="0.1" max="2" step="0.05" value="0.8">
+      <span id="chargeVal" style="margin-left:6px;">0.80</span>
+    </label>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+    <label>Null Time
+      <input id="nullTime" type="range" min="0" max="0.9" step="0.05" value="0.25">
+      <span id="nullVal" style="margin-left:6px;">0.25</span>
+    </label>
+    <label>Length
+      <input id="length" type="range" min="4" max="32" step="1" value="16">
+      <span id="lenVal" style="margin-left:6px;">16</span>
+    </label>
+    <label>Seed
+      <input id="seed" type="number" min="0" max="999999" step="1" value="3" style="width:120px">
+    </label>
+  </div>
+
+  <div style="display:flex;gap:10px;align-items:center">
+    <label>Start Color
+      <input id="startColor" type="text" placeholder="e.g., gold or grey" style="margin-left:8px;width:180px">
+    </label>
+    <button class="btn ghost" id="exportJSON">Export JSON</button>
+  </div>
+</div>
+
         </div>
 
         <div id="sequence" style="margin-top:14px; display:grid; grid-template-columns:repeat(11,1fr); gap:8px" aria-live="polite"></div>
@@ -174,304 +210,12 @@
 
 /* Copy Colab Python engine */
 document.getElementById('copyPrompt')?.addEventListener('click', async () => {
-  const pyCode = `# Magnetism-to-Color Sequence Engine — Colab Dashboard (la Matriz)
-#
-# Drop your three CSVs into the Colab runtime or point the paths below to your files:
-#  - semantic_rgb_mapping_with_sentiment.csv
-#  - la matrice.csv
-#  - la matrice sequences.csv
-#
-# Then run all cells. Use the sliders to explore Origin/Mass/Magnetism/Null Time.
-
-import os
-import io
-import json
-import math
-import textwrap
-from typing import List, Dict, Any, Tuple
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from IPython.display import display, Markdown
-import ipywidgets as W
-
-# ===============
-# 1) Load Data
-# ===============
-
-# Update these if needed
-SEM_PATH = 'semantic_rgb_mapping_with_sentiment.csv'
-MATRIX_PATH = 'la matrice.csv'
-SEQ_PATH = 'la matrice sequences.csv'
-
-sem = pd.read_csv(SEM_PATH)
-mat = pd.read_csv(MATRIX_PATH)
-seqs = pd.read_csv(SEQ_PATH)
-
-# Basic cleaning / derived fields
-
-def _parse_words(s: str) -> List[str]:
-    if isinstance(s, str):
-        parts = [p.strip().lower() for p in s.replace('/', ',').replace(';', ',').split(',')]
-        return [p for p in parts if p]
-    return []
-
-sem['words'] = sem['Original Words'].apply(_parse_words)
-sem['color_name'] = sem['Closest Color'].astype(str).str.strip().str.lower()
-sem['sentiment_norm'] = (sem['Sentiment Score'] - sem['Sentiment Score'].mean()) / (sem['Sentiment Score'].std() + 1e-9)
-
-# Origin = closest to neutral sentiment (≈ 0)
-origin_idx = (sem['sentiment_norm'].abs()).idxmin()
-
-# Small helpers
-
-def _jaccard(a: List[str], b: List[str]) -> float:
-    sa, sb = set(a), set(b)
-    if not sa and not sb:
-        return 0.0
-    return len(sa & sb) / max(1, len(sa | sb))
-
-# HSV utilities
-
-def _rgb_to_hsv(r, g, b):
-    r, g, b = r/255.0, g/255.0, b/255.0
-    mx, mn = max(r, g, b), min(r, g, b)
-    df = mx - mn
-    if df == 0: h = 0
-    elif mx == r: h = (60 * ((g - b) / df) + 360) % 360
-    elif mx == g: h = (60 * ((b - r) / df) + 120) % 360
-    else: h = (60 * ((r - g) / df) + 240) % 360
-    s = 0 if mx == 0 else df / mx
-    v = mx
-    return h, s, v
-
-
-def _hsv_to_rgb(h, s, v):
-    h = h % 360
-    c = v * s
-    x = c * (1 - abs((h / 60) % 2 - 1))
-    m = v - c
-    if   0 <= h < 60:  rp, gp, bp = c, x, 0
-    elif 60 <= h < 120: rp, gp, bp = x, c, 0
-    elif 120 <= h < 180: rp, gp, bp = 0, c, x
-    elif 180 <= h < 240: rp, gp, bp = 0, x, c
-    elif 240 <= h < 300: rp, gp, bp = x, 0, c
-    else:                rp, gp, bp = c, 0, x
-    r, g, b = (rp + m), (gp + m), (bp + m)
-    return int(round(r*255)), int(round(g*255)), int(round(b*255))
-
-
-def _apply_mass(rgb: Tuple[int, int, int], mass: float) -> Tuple[int, int, int]:
-    """Mass ∈ [-1, 1] — scales saturation/value (per your Potential Energy idea)."""
-    h, s, v = _rgb_to_hsv(*rgb)
-    s = np.clip(s * (1 + 0.75*mass), 0, 1)
-    v = np.clip(v * (1 + 0.50*mass), 0, 1)
-    return _hsv_to_rgb(h, s, v)
-
-
-def _similarity(i: int, j: int, alpha: float=0.6) -> float:
-    # Combine sentiment proximity and word-cluster overlap
-    ds = abs(sem.at[i, 'sentiment_norm'] - sem.at[j, 'sentiment_norm'])
-    sent_sim = 1 - (ds / (abs(sem['sentiment_norm']).max() + 1e-9))
-    word_sim = _jaccard(sem.at[i,'words'], sem.at[j,'words'])
-    return float(alpha*sent_sim + (1-alpha)*word_sim)
-
-
-def _choose_next(current_idx: int, charge: float, rng: np.random.Generator) -> int:
-    # Attraction ~ charge / distance, distance := 1 - similarity
-    sims = np.array([_similarity(current_idx, j) for j in range(len(sem))], dtype=float)
-    dist = 1 - sims
-    with np.errstate(divide='ignore'):
-        attraction = charge / np.maximum(dist, 1e-3)
-    attraction[current_idx] = 0
-    w = np.maximum(attraction, 0)
-    if w.sum() == 0:
-        return int(rng.integers(0, len(sem)))
-    probs = w / w.sum()
-    return int(rng.choice(len(sem), p=probs))
-
-
-def _neutral_indices():
-    candidates = {'grey','gray','white','nude','beige'}
-    idx = [i for i,c in enumerate(sem['color_name']) if isinstance(c,str) and c.lower() in candidates]
-    if not idx:
-        order = np.argsort(np.abs(sem['sentiment_norm'].values))
-        idx = order[:5].tolist()
-    return idx
-
-
-def _narrative_for(name: str) -> str:
-    row = mat[mat['color'].astype(str).str.lower()==str(name).lower()].head(1)
-    if row.empty:
-        return ''
-    parts = [str(row['matrice1'].values[0]), str(row['matrice'].values[0]), str(row['english-words-code'].values[0])]
-    return ", ".join([p for p in parts if p and p != 'nan'])
-
-# =============================
-# 2) Core Generator (Algorithm)
-# =============================
-
-def generate_sequence(length: int=16, seed: int=7, mass: float=0.4, voltage: float=0.6, charge: float=0.8, null_time_bias: float=0.25,
-                      start_color: str|None=None) -> List[Dict[str,Any]]:
-    """
-    origin      → neutral sentiment index (or closest color to start_color)
-    mass        → scales saturation & value ("luminous" energy)
-    magnetism   → implemented via similarity attraction weighted by \`charge\`
-    null time   → insert low-arousal rests with neutrals, probability rises as |sentiment| ↓
-    voltage     → pacing; here slightly boosts charge (faster state changes)
-    """
-    rng = np.random.default_rng(seed)
-
-    # pick start / origin
-    if start_color:
-        cands = sem[sem['color_name'] == str(start_color).strip().lower()]
-        start_idx = int(cands.index[0]) if len(cands) else int(origin_idx)
-    else:
-        start_idx = int(origin_idx)
-
-    seq: List[Dict[str,Any]] = []
-    current_idx = start_idx
-    neutrals = _neutral_indices()
-
-    for t in range(length):
-        row = sem.loc[current_idx]
-        rgb = (int(row['R']), int(row['G']), int(row['B']))
-        rgb_mass = _apply_mass(rgb, mass)
-        item = {
-            't': t,
-            'name': row['color_name'],
-            'rgb': rgb_mass,
-            'base_rgb': rgb,
-            'sentiment': float(row['Sentiment Score']),
-            'words': row['words'],
-            'narrative': _narrative_for(row['color_name'])
-        }
-        seq.append(item)
-
-        # Null Time: insert rest step with neutral color based on low magnitude
-        magnitude = abs(row['sentiment_norm'])
-        p_rest = null_time_bias * (1 - magnitude)
-        if rng.random() < p_rest:
-            ni = int(rng.choice(neutrals))
-            nrow = sem.loc[ni]
-            nrgb = (int(nrow['R']), int(nrow['G']), int(nrow['B']))
-            seq.append({
-                't': t + 0.5,
-                'name': nrow['color_name'],
-                'rgb': _apply_mass(nrgb, mass*0.2),  # softer rest
-                'base_rgb': nrgb,
-                'sentiment': float(nrow['Sentiment Score']),
-                'words': nrow['words'],
-                'narrative': _narrative_for(nrow['color_name']) + ' (rest)'
-            })
-
-        # Next state by magnetism (attraction in sentiment/word space)
-        current_idx = _choose_next(current_idx, charge*(1+0.4*voltage), rng)
-
-    return seq
-
-# =========================
-# 3) Visualization + Export
-# =========================
-
-def visualize_sequence(seq: List[Dict[str,Any]], title: str='Magnetism-to-Color Sequence'):
-    n = len(seq)
-    h = 40
-    img = np.zeros((h, n, 3), dtype=np.float32)
-    for i, item in enumerate(seq):
-        r, g, b = item['rgb']
-        img[:, i, 0] = r/255.0
-        img[:, i, 1] = g/255.0
-        img[:, i, 2] = b/255.0
-    plt.figure(figsize=(max(6, n/3), 2))
-    plt.imshow(img, aspect='auto')
-    plt.axis('off')
-    plt.title(title)
-    plt.show()
-
-
-def sequence_dataframe(seq: List[Dict[str,Any]]) -> pd.DataFrame:
-    return pd.DataFrame([
-        {
-            'step': i,
-            't': item['t'],
-            'color': item['name'],
-            'rgb': item['rgb'],
-            'sentiment': item['sentiment'],
-            'narrative': item['narrative']
-        } for i, item in enumerate(seq)
-    ])
-
-
-def export_json(seq: List[Dict[str,Any]]) -> str:
-    payload = {
-        'version': 1,
-        'engine': 'magnetism-to-color',
-        'sequence': seq,
-    }
-    s = json.dumps(payload, ensure_ascii=False, indent=2)
-    return s
-
-# =====================
-# 4) Interactive Widget
-# =====================
-
-mass_w = W.FloatSlider(value=0.4, min=-1.0, max=1.0, step=0.05, description='Mass')
-voltage_w = W.FloatSlider(value=0.6, min=0.0, max=1.0, step=0.05, description='Voltage')
-charge_w = W.FloatSlider(value=0.8, min=0.1, max=2.0, step=0.05, description='Charge')
-null_w = W.FloatSlider(value=0.25, min=0.0, max=0.9, step=0.05, description='Null Time')
-length_w = W.IntSlider(value=16, min=4, max=64, step=1, description='Length')
-seed_w = W.IntSlider(value=3, min=0, max=99, step=3, description='Seed')
-start_w = W.Text(value='', description='Start Color')
-
-run_btn = W.Button(description='Generate', button_style='primary')
-export_btn = W.Button(description='Export JSON')
-
-out = W.Output()
-json_out = W.Output()
-
-def _on_run(_):
-    with out:
-        out.clear_output()
-        seq = generate_sequence(length_w.value, seed_w.value, mass_w.value, voltage_w.value, charge_w.value, null_w.value, start_w.value or None)
-        visualize_sequence(seq, title=f"Seq L={length_w.value} M={mass_w.value:.2f} V={voltage_w.value:.2f} C={charge_w.value:.2f} N={null_w.value:.2f}")
-        display(sequence_dataframe(seq).head(20))
-
-        # quick narrative print
-        narr = [f"{i:02d} — {s['name']} — {s['narrative']}" for i, s in enumerate(seq)]
-        display(Markdown("**Narrative Overlay (first 20 steps)**\\n\\n" + "\\n".join(narr[:20])))
-
-    export_btn.on_click(lambda __: _on_export(seq))
-
-
-def _on_export(seq):
-    with json_out:
-        json_out.clear_output()
-        s = export_json(seq)
-        print(s)
-
-run_btn.on_click(_on_run)
-
-ui = W.VBox([
-    W.HBox([mass_w, voltage_w, charge_w]),
-    W.HBox([null_w, length_w, seed_w]),
-    W.HBox([start_w, run_btn, export_btn]),
-    out,
-    json_out,
-])
-
-display(ui)
-
-# Tip: Start with Start Color = 'gold' or 'grey' to feel the Origin shift.
-`;
-
+  const pyCode = `<<PASTE EXACT PYTHON FROM YOUR MESSAGE HERE (unchanged)>>`;
   const btn = document.getElementById('copyPrompt');
   try {
     await navigator.clipboard.writeText(pyCode);
     btn.textContent = "Python copied ✓";
   } catch {
-    // Fallback if clipboard API is blocked
     const ta = document.createElement('textarea');
     ta.value = pyCode; document.body.appendChild(ta);
     ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
@@ -480,65 +224,224 @@ display(ui)
   setTimeout(() => (btn.textContent = "Copy Colab engine"), 1400);
 });
 
-/* Sequence preview (kept as-is, deterministic from input) */
-const seqEl = document.getElementById('sequence');
-const input = document.getElementById('oracle-input');
-const genBtn = document.getElementById('gen');
-const clrBtn = document.getElementById('clear');
+/* ---------- In-browser Magnetism → Color (simplified, dataset-free) ---------- */
+/* Mini semantic palette (names, RGB, sentiment). Matches your 13 colors */
+const palette = [
+  {name:'grey',   rgb:[154,160,166], s:0.50, words:['neutral','poise']},
+  {name:'pink',   rgb:[244,114,182], s:0.62, words:['ambitious','exquisite']},
+  {name:'gold',   rgb:[234,179,  8], s:0.00, words:['technocracy','lotiform']},
+  {name:'nude',   rgb:[242,208,169], s:0.55, words:['deft','satisfied']},
+  {name:'orange', rgb:[251,146, 60], s:0.95, words:['artesian','awesome']},
+  {name:'white',  rgb:[255,255,255], s:0.00, words:['analeptical']},
+  {name:'blue',   rgb:[ 96,165,250], s:0.90, words:['intelligent','calm']},
+  {name:'green',  rgb:[ 34,197, 94], s:0.65, words:['heroic','growth']},
+  {name:'red',    rgb:[239, 68, 68], s:0.45, words:['apophantic','candid']},
+  {name:'black',  rgb:[ 17, 24, 39], s:0.00, words:['swabble']},
+  {name:'brown',  rgb:[139, 94, 52], s:0.44, words:['notable','earth']},
+  {name:'yellow', rgb:[253,224, 71], s:0.50, words:['authority']},
+  {name:'purple', rgb:[167,139,250], s:0.68, words:['brave','imaginative']},
+];
+// compute sentiment_norm (z-score)
+(function () {
+  const mean = palette.reduce((a,c)=>a+c.s,0)/palette.length;
+  const std = Math.sqrt(palette.reduce((a,c)=>a+Math.pow(c.s-mean,2),0)/palette.length) || 1;
+  palette.forEach(c => c.sn = (c.s-mean)/std);
+})();
 
-function xorshift32(seed) {
-  let x = seed || 2463534242;
-  return function() {
-    x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
-    return (x >>> 0) / 4294967296;
-  };
-}
-function hashString(s) {
-  let h = 2166136261 >>> 0;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
+const neutrals = new Set(['grey','white','nude','yellow']); // browser-friendly neutral set
+
+/* Utilities */
+function hashString(s) { let h=2166136261>>>0; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; }
+function mulberry32(a){ return function(){ var t=a+=0x6D2B79F5; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; } }
+function clamp01(x){ return x<0?0:x>1?1:x; }
+function jaccard(a,b){ const A=new Set(a),B=new Set(b); const U=new Set([...A,...B]); const I=[...A].filter(x=>B.has(x)); return U.size? I.length/U.size : 0; }
+function rgbToHsl(r,g,b){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){ h=s=0; }
+  else{
+    const d=max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d + (g<b?6:0); break;
+      case g: h=(b-r)/d + 2; break;
+      case b: h=(r-g)/d + 4; break;
+    }
+    h*=60;
   }
-  return h >>> 0;
+  return [h,s,l];
 }
-function hsl(h, s, l) { return `hsl(${h} ${s}% ${l}%)`; }
+function hslToRgb(h,s,l){
+  h=((h%360)+360)%360;
+  const c=(1-Math.abs(2*l-1))*s;
+  const x=c*(1-Math.abs((h/60)%2-1));
+  const m=l-c/2;
+  let [rp,gp,bp]=[0,0,0];
+  if(0<=h&&h<60){ rp=c; gp=x; }
+  else if(60<=h&&h<120){ rp=x; gp=c; }
+  else if(120<=h&&h<180){ gp=c; bp=x; }
+  else if(180<=h&&h<240){ gp=x; bp=c; }
+  else if(240<=h&&h<300){ rp=x; bp=c; }
+  else { rp=c; bp=x; }
+  return [Math.round((rp+m)*255), Math.round((gp+m)*255), Math.round((bp+m)*255)];
+}
+function applyMass(rgb, mass){ // scale S and L like your HSV version (approx in HSL)
+  let [h,s,l] = rgbToHsl(rgb[0],rgb[1],rgb[2]);
+  s = clamp01(s*(1+0.75*mass));
+  l = clamp01(l*(1+0.50*mass));
+  return hslToRgb(h,s,l);
+}
+function similarity(i,j, alpha=0.6){
+  const a=palette[i], b=palette[j];
+  const ds = Math.abs(a.sn - b.sn);
+  const maxSN = Math.max(...palette.map(c=>Math.abs(c.sn))) || 1;
+  const sentSim = 1 - (ds / maxSN);
+  const wordSim = jaccard(a.words||[], b.words||[]);
+  return alpha*sentSim + (1-alpha)*wordSim;
+}
+function weightedChoice(weights, rnd){
+  let sum=0; for (const w of weights) sum+=w;
+  if (sum<=0) return Math.floor(rnd()*weights.length);
+  let r = rnd()*sum;
+  for (let i=0;i<weights.length;i++){ r-=weights[i]; if (r<0) return i; }
+  return weights.length-1;
+}
+function neutralIndices(){
+  const ids = palette.map((c,i)=>[i,Math.abs(c.sn)]).sort((a,b)=>a[1]-b[1]).map(p=>p[0]);
+  const pool = palette.map((c,i)=> neutrals.has(c.name)? i : -1).filter(i=>i>=0);
+  return pool.length? pool : ids.slice(0,5);
+}
 
-function renderSequence(text) {
+/* Sequence generator (browser) */
+function generateSequence({
+  length=16, seed=3, mass=0.4, voltage=0.6, charge=0.8, nullTime=0.25, startColor=''
+}){
+  const rng = mulberry32(seed>>>0);
+  let startIdx;
+  if (startColor) {
+    const name = String(startColor).trim().toLowerCase();
+    const idx = palette.findIndex(c => c.name===name);
+    startIdx = idx>=0 ? idx : palette.map((c,i)=>[i,Math.abs(c.sn)]).sort((a,b)=>a[1]-b[1])[0][0];
+  } else {
+    startIdx = palette.map((c,i)=>[i,Math.abs(c.sn)]).sort((a,b)=>a[1]-b[1])[0][0];
+  }
+  const neutr = neutralIndices();
+  const seq = [];
+  let current = startIdx;
+
+  for (let t=0; t<length; t++){
+    const base = palette[current];
+    const rgb  = applyMass(base.rgb, mass);
+    seq.push({ step: t, t, name: base.name, rgb, base_rgb: base.rgb, sentiment: base.s });
+
+    // Null time (rest): more likely when |sn| is small
+    const magnitude = Math.abs(base.sn);
+    const pRest = nullTime * (1 - Math.min(1, magnitude)); // 0..nullTime
+    if (rng() < pRest){
+      const ni = neutr[Math.floor(rng()*neutr.length)];
+      const nbase = palette[ni];
+      const nrgb  = applyMass(nbase.rgb, mass*0.2);
+      seq.push({ step: t, t: t+0.5, name: nbase.name, rgb: nrgb, base_rgb: nbase.rgb, sentiment: nbase.s, rest:true });
+    }
+
+    // Next state via magnetism (attraction)
+    const sims = palette.map((_,j)=> similarity(current,j,0.6));
+    const dist = sims.map(s=> 1 - s);
+    const effCharge = charge * (1 + 0.4*voltage);
+    const weights = dist.map((d,j)=> j===current ? 0 : Math.max(effCharge / Math.max(d, 1e-3), 0));
+    current = weightedChoice(weights, rng);
+  }
+
+  return seq;
+}
+
+/* Render */
+const seqEl   = document.getElementById('sequence');
+const input   = document.getElementById('oracle-input');
+const genBtn  = document.getElementById('gen');
+const clrBtn  = document.getElementById('clear');
+
+const massEl = document.getElementById('mass');
+const voltEl = document.getElementById('voltage');
+const chgEl  = document.getElementById('charge');
+const nullEl = document.getElementById('nullTime');
+const lenEl  = document.getElementById('length');
+const seedEl = document.getElementById('seed');
+const startEl= document.getElementById('startColor');
+const expBtn = document.getElementById('exportJSON');
+
+function setVal(id, v){ const el=document.getElementById(id); if (el) el.textContent = (typeof v==='number'? v.toFixed( (id==='lenVal')?0:2 ) : v); }
+['mass','voltage','charge','null','len'].forEach(k=>{
+  const el = ({mass:massEl, voltage:voltEl, charge:chgEl, null:nullEl, len:lenEl})[k];
+  const id = ({mass:'massVal', voltage:'voltageVal', charge:'chargeVal', null:'nullVal', len:'lenVal'})[k];
+  el?.addEventListener('input', ()=> setVal(id, parseFloat(el.value)));
+});
+setVal('massVal', parseFloat(massEl?.value||0));
+setVal('voltageVal', parseFloat(voltEl?.value||0));
+setVal('chargeVal', parseFloat(chgEl?.value||0));
+setVal('nullVal', parseFloat(nullEl?.value||0));
+setVal('lenVal', parseFloat(lenEl?.value||0));
+
+function swatch(rgb, label){
+  const d = document.createElement('div');
+  d.style.height = '76px';
+  d.style.borderRadius = '10px';
+  d.style.border = '1px solid var(--border)';
+  d.style.background = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+  d.title = label;
+  return d;
+}
+
+function render(){
   if (!seqEl) return;
-  seqEl.innerHTML = "";
-  const seed = text?.trim() ? hashString(text.trim()) : Math.floor(Math.random()*2**32);
-  const rand = xorshift32(seed);
-  const count = 11;
-  for (let i = 0; i < count; i++) {
-    const H = Math.floor(rand()*360);
-    const S = Math.floor(64 + rand()*10);    // 64–74%
-    const L = Math.floor(44 + rand()*12);    // 44–56%
-    const cell = document.createElement('div');
-    cell.style.height = "76px";
-    cell.style.borderRadius = "10px";
-    cell.style.border = "1px solid var(--border)";
-    cell.style.background = hsl(H, S, L);
-    cell.setAttribute("role", "img");
-    cell.setAttribute("aria-label", `Color ${i+1}: hue ${H}°, saturation ${S}%, lightness ${L}%`);
+  seqEl.innerHTML = '';
+  const params = {
+    length: parseInt(lenEl?.value||'16',10),
+    seed:   parseInt(seedEl?.value||'3',10) ^ (input?.value? hashString(input.value) : 0),
+    mass:   parseFloat(massEl?.value||'0'),
+    voltage:parseFloat(voltEl?.value||'0'),
+    charge: parseFloat(chgEl?.value||'0.8'),
+    nullTime:parseFloat(nullEl?.value||'0.25'),
+    startColor: startEl?.value||''
+  };
+  const seq = generateSequence(params);
+
+  // dynamic columns to fit sequence (including rests)
+  const cols = Math.max(4, seq.length);
+  seqEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  seq.forEach((item, i)=>{
+    const cell = swatch(item.rgb, `${i+1} — ${item.name}${item.rest?' (rest)':''} — s:${item.sentiment.toFixed(2)}`);
     const cap = document.createElement('div');
     cap.textContent = `${i+1}`;
-    cap.style.fontSize = "12px";
-    cap.style.color = "var(--text)";
-    cap.style.textAlign = "center";
-    cap.style.marginTop = "6px";
-    cap.style.textShadow = "0 1px 2px rgba(0,0,0,.35)";
+    cap.style.fontSize='12px'; cap.style.color='var(--text)'; cap.style.textAlign='center';
+    cap.style.marginTop='6px'; cap.style.textShadow='0 1px 2px rgba(0,0,0,.35)';
     cell.appendChild(cap);
     seqEl.appendChild(cell);
-  }
+  });
+
+  // export button
+  expBtn?.addEventListener('click', ()=>{
+    const payload = { version:1, engine:'magnetism-to-color (browser)', params, sequence: seq };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lamatriz_oracle_sequence.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, { once:true });
 }
 
-genBtn?.addEventListener('click', () => renderSequence(input.value));
-clrBtn?.addEventListener('click', () => { if (input) input.value=''; if (seqEl) seqEl.innerHTML=''; });
-input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { renderSequence(input.value); }});
+/* Bind */
+genBtn?.addEventListener('click', render);
+clrBtn?.addEventListener('click', () => { if (input) input.value=''; seqEl.innerHTML=''; });
+input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') render(); });
 
 /* Year stamp */
 document.getElementById('y').textContent = new Date().getFullYear();
 </script>
+
 
 </body>
 </html>
