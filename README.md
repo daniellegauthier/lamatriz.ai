@@ -155,9 +155,9 @@ Please keep the tone and intent of the project: **care over extraction**.
 
 ## Licenses
 
-* **Site code (HTML/CSS/JS)**: MIT © La Matriz Consulting
+* **Site code (HTML/CSS/JS)**: Apache 2.0 © La Matriz Consulting
 * **Text & images (thesis, figures, brand assets)**: **CC BY-NC-SA 4.0** unless otherwise noted.
-  Commercial use of content requires permission. Logo is a trademark; do not reuse without consent.
+  Commercial use of content requires permission.
 
 ---
 
