@@ -18,10 +18,10 @@ a { color: inherit; text-decoration: none; }
 /* ---------- Design Tokens (Dark) ---------- */
 :root{
   /* Core surfaces */
-  --bg: #262014;            /* near-black brown */
+  --bg: #F2EBDC;          /* paper/cream */ 
   --surface: #594E39;       /* dark brown */
   --card: color-mix(in oklab, #594E39 70%, #F2EBDC); /* softened bark */
-  --text: #F2EBDC;          /* paper/cream */
+  --text: #262014;         /* near-black brown */
   --muted: #A69D85;         /* warm taupe */
   --border: #594E39;        /* structure line */
   --shadow: 0 10px 30px rgba(0,0,0,.35);
