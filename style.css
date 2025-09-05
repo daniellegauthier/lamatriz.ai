@@ -55,7 +55,7 @@ a { color: inherit; text-decoration: none; }
     --bg: #F2EBDC;                                /* paper */
     --surface: #F2EBDC;                           /* paper */
     --card: color-mix(in oklab, #F2EBDC 80%, #A69D85);
-    --text: #262014;                              /* deep brown */
+    --text: #F2EBDC;                           /* paper */
     --muted: #594E39;                             /* readable taupe on light */
     --border: color-mix(in oklab, #262014 18%, #F2EBDC);
     --accent: #7A8C51;
