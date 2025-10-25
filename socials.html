@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Social Links — La Matriz Consulting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Socials and pilgrimage traces of La Matriz Consulting — Danielle Gauthier’s chromatic and relational technology work.">
+  <link rel="preload" href="/assets/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <link rel="canonical" href="https://lamatriz.ai/socials">
+  <meta property="og:title" content="Socials — La Matriz Consulting">
+  <meta property="og:description" content="Follow the chromatic traces: LinkedIn, Travelmap, Bluesky, X, Substack, OpenSea, and GitHub.">
+  <meta property="og:image" content="https://lamatriz.ai/og.png">
+  <meta name="theme-color" content="#0B0B0C">
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a class="logo" href="/">
+      <img src="/assets/img/la matriz root.png" alt="La Matriz logo" height="44">
+      lamatriz.ai
+    </a>
+    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
+    <nav id="primaryNav">
+      <a href="/consulting">Consulting</a>
+      <a href="/api">API</a>
+      <a href="/thesis">Thesis</a>
+      <a href="/oracle">Oracle</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a href="/socials" aria-current="page">Socials</a>
+      <a class="cta" href="/contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="container">
+      <div>
+        <h1>Socials & Pilgrimage Links</h1>
+        <p>
+          The relational field of <strong>La Matriz Consulting</strong> unfolds across research, art, and digital care economies and infrastructures.  
+          These links trace its living network — color as method, pilgrimage as praxis.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="container">
+
+      <!-- Travel & Pilgrimage -->
+      <article class="card">
+        <h3>🌍 Premordial Pilgrimage</h3>
+        <p>
+          My travel log and fieldwork map for La Matriz Consulting — tracking journeys that will inform and be informed by the chromatic archive.
+        </p>
+        <a class="btn primary" href="https://daniellegauthier.travelmap.net" target="_blank" rel="noopener">View Travel Map</a>
+      </article>
+
+      <!-- OpenSea -->
+      <article class="card">
+        <h3>🕯️ OpenSea — Morphology NFTs</h3>
+        <p>
+          Mityafiat_Ghama: color-sequence and symbolic work minted in biohacking practice.
+        </p>
+        <a class="btn" href="https://opensea.io/Mityafiat_Ghama" target="_blank" rel="noopener">OpenSea Collection</a>
+      </article>
+
+      <!-- LinkedIn -->
+      <article class="card">
+        <h3>🐝 LinkedIn (Professional)</h3>
+        <ul class="footer-nav">
+          <li><a href="https://www.linkedin.com/in/daniellegauthier-art/" target="_blank" rel="noopener">Danielle Gauthier — personal</a></li>
+          <li><a href="https://www.linkedin.com/company/la-matriz-consulting/" target="_blank" rel="noopener">La Matriz Consulting — company</a></li>
+        </ul>
+      </article>
+
+      <!-- Writing -->
+      <article class="card">
+        <h3>🐞 Writing & Science</h3>
+        <p>Essays, ritual economy and infrastructure reflections, and programming field notes.</p>
+        <a class="btn" href="https://substack.com/@mighnatisalard" target="_blank" rel="noopener">Read on Substack</a>
+      </article>
+
+      <!-- Social Media -->
+      <article class="card">
+        <h3>🌝 Social Media</h3>
+        <ul class="footer-nav">
+          <li><a href="https://www.instagram.com/fatimaumma11/" target="_blank" rel="noopener">Instagram — @fatimaumma11</a></li>
+          <li><a href="https://x.com/shifahaqq3" target="_blank" rel="noopener">X / Twitter — @shifahaqq3</a></li>
+          <li><a href="https://bsky.app/profile/tayar-alsarf.bsky.social" target="_blank" rel="noopener">Bluesky — @tayar-alsarf</a></li>
+        </ul>
+      </article>
+
+      <!-- GitHub -->
+      <article class="card">
+        <h3>🐸 GitHub</h3>
+        <p>
+          Coded deterministic model interface experiments for emotional AI.
+        </p>
+        <a class="btn" href="https://github.com/daniellegauthier" target="_blank" rel="noopener">GitHub Profile</a>
+      </article>
+
+      <!-- Stake -->
+      <article class="card" style="grid-column:1/-1">
+        <h3>🧿 Stake Address (hack thing)</h3>
+        <p>
+          This stake address points to a collaborative experiment — resilience, persistence, and shared lineage.
+        </p>
+        <a class="btn ghost" href="https://www.instagram.com/brucegraney/" target="_blank" rel="noopener">@brucegraney</a>
+        <p class="meta" style="margin-top:6px;color:var(--muted)">Stake Address (hack thing) — La Matriz Consulting meta ledger trace.</p>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="/consulting">Consulting</a>
+      <a href="/api">API</a>
+      <a href="/thesis">Thesis</a>
+      <a href="/oracle">Oracle</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a href="/socials" aria-current="page">Socials</a>
+      <a href="/contact">Contact</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+    <div class="footer-meta">© <span id="y"></span> La Matriz · No trackers.</div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const btn = document.getElementById('menuToggle');
+    const nav = document.getElementById('primaryNav');
+    if (!btn || !nav) return;
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  }());
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
