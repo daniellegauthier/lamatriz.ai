@@ -35,13 +35,16 @@
     <a class="logo" href="/">lamatriz.ai</a>
     <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
     <nav id="primaryNav">
-      <a href="/consulting">Consulting</a>
+     <a href="/consulting">Consulting</a>
       <a href="/api">API</a>
       <a href="/thesis">Thesis</a>
       <a href="/oracle">Oracle</a>
       <a href="/soulcoin">Soulcoin</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/gnh-work-statement">Work Statement</a>
       <a class="cta" href="/socials">Socials</a>
-      <a class="cta" href="/contact" aria-current="page">Contact</a>
+      <a class="cta" href="/contact">Contact</a>
     </nav>
   </div>
 </header>
@@ -58,7 +61,6 @@
         </p>
         <div class="cta-group">
           <a class="btn primary" href="mailto:danielle.gauthier@lamatriz.ai">Email Danielle</a>
-          <a class="btn ghost" href="#form">Use the secure form</a>
         </div>
         <p class="meta" style="margin-top:10px;color:#B7BCCD">No trackers. We keep messages confidential and minimal by default. See <a href="/privacy">Privacy</a>.</p>
       </div>
@@ -82,18 +84,18 @@
     </div>
   </section>
 
-  <!-- Contact form -->
+  <!-- Contact form
   <section class="grid" id="form">
     <div class="container">
       <article class="card" style="grid-column:1/-1;">
         <h2>Send a secure message</h2>
         <form id="contact-form" action="/contact/submit" method="POST" novalidate>
-          <!-- CSRF placeholder for your server to verify -->
+          CSRF placeholder for your server to verify 
           <input type="hidden" name="csrf" id="csrf">
-          <!-- Timezone & page -->
+          Timezone & page 
           <input type="hidden" name="tz" id="tz">
           <input type="hidden" name="page" value="/contact">
-          <!-- Honeypot -->
+           Honeypot 
           <div class="visually-hidden" aria-hidden="true">
             <label>Company <input type="text" name="company" autocomplete="organization"></label>
           </div>
@@ -119,7 +121,7 @@
             <textarea id="message" name="message" rows="7" required maxlength="5000" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);" placeholder="How can we help? Please avoid sharing sensitive details."></textarea>
           </div>
 
-          <!-- Lightweight challenge -->
+          Lightweight challenge 
           <div style="margin-top:12px; display:flex; gap:12px; align-items:center">
             <label for="captcha" id="captchaLabel">What is 2 + 3?</label>
             <input id="captcha" name="captcha" type="text" inputmode="numeric" pattern="^[0-9]+$" required style="max-width:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0A0B0D;color:var(--text);">
@@ -138,6 +140,8 @@
       </article>
     </div>
   </section>
+  -->
+  
 
 </main>
 
@@ -149,9 +153,11 @@
       <a href="/thesis">Thesis</a>
       <a href="/oracle">Oracle</a>
       <a href="/soulcoin">Soulcoin</a>
-      <a href="/contact" aria-current="page">Contact</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="/gnh-work-statement">Work Statement</a>
+      <a class="cta" href="/socials">Socials</a>
+      <a class="cta" href="/contact">Contact</a>
     </nav>
     <div class="footer-meta">© <span id="y"></span> La Matriz · No trackers.</div>
   </div>
