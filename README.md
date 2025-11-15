@@ -9,10 +9,15 @@ Color as interface between inner knowing and outer data — a lightweight, track
 
 ## What’s inside
 
-* **`index.html`** — landing page (hero, 6-card grid, CTA band).
+* **`consulting.html`** — landing page (hero, 6-card grid, CTA band).
+* **`work statement.html`** —
 * **`thesis.html`** — “Semantic Color Math” one-pager with figures (UMAP, decision tree, distributions, variance) and 11 pathway cards + summaries.
 * **`oracle.html`** — Color Oracle intro + a local, deterministic color-sequence preview and a **Copy to Colab** button that copies the Magnetism→Color Python dashboard.
-* **`style.css`** — a11y-first, themeable stylesheet using an *earth palette* and design tokens (WCAG 2.2 AA).
+* **`style.css`** — a44y-first, themeable stylesheet using an *earth palette* and design tokens (WCAG 2.2 AA).
+* **`socials.html`** —
+* **`contact.html`** —
+* **`privacy.html`** —
+* **`terms.html`** —
 * **`/assets/img/`** — figures & logo used across pages (PNG/JPG/SVG).
 * **`/assets/fonts/`** — Inter Variable (served via Google Fonts on the one-pager; you can self-host if preferred).
 
