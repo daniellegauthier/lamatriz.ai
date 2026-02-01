@@ -1,8 +1,9 @@
 from typing import Dict, List
 from .data import SEQUENCE_ALIASES, load_pathway_info
 from .scoring import score_sentiment, classify_emotion, score_accomplishment
-from .gnh import semantic_indicator_mapping, gnh_plot_base64
+from .gnh import semantic_indicator_mapping, gnh_plot_base64, gnh_plot_png
 from .assets import pathway_image_url
+from backend.api.cache import store_png   
 
 SEQ_TO_COLORS, SEQ_PHRASE = load_pathway_info()
 
@@ -29,6 +30,9 @@ def analyze(
         combined_text,
         sentiment_score=sentiment
     )
+    
+    png_bytes = gnh_plot_png(indicators)
+    plot_key = store_png(png_bytes)
 
     top5 = dict(list(indicators.items())[:5])
     gnh_plot = gnh_plot_base64(indicators)
@@ -47,6 +51,10 @@ def analyze(
 
         "gnh_top_5": top5,
         "gnh_plot_base64": gnh_plot,
+        "gnh_plot_png_url": f"/api/gnh-plot/{plot_key}/",
 
         "pathway_image": image_url,
     }
+
+
+
