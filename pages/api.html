@@ -1,0 +1,10 @@
+fetch("https://api.lamatriz.ai/api/analyze/", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    text: userText,
+    sequence: selectedSequence
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data));
