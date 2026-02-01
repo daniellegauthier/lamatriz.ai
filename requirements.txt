@@ -1,0 +1,8 @@
+pytest
+torch
+transformers
+sentence-transformers
+spacy
+nltk
+pandas
+matplotlib
