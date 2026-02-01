@@ -1,3 +1,35 @@
+<header>
+  <div class="container header-inner">
+    <a class="logo" href="/"><img src="/assets/img/la matriz root only.png" alt="La Matriz Logo">lamatriz.ai</a>
+    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
+    <nav id="primaryNav">
+      <a href="/consulting">Consulting</a>
+      <a href="/api">API</a>
+      <a href="/thesis">Thesis</a>
+      <a href="/oracle">Oracle</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/gnh-work-statement">Work Statement</a>
+      <a class="cta" href="/socials">Socials</a>
+      <a class="cta" href="/contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<main>
+ <section class="hero">
+  <h1>Semantic Color Math API</h1>
+
+
+<img id="gnhPlot" />
+
+<script>
 fetch("https://api.lamatriz.ai/api/analyze/", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -8,3 +40,25 @@ fetch("https://api.lamatriz.ai/api/analyze/", {
 })
 .then(res => res.json())
 .then(data => console.log(data));
+
+img.src = response.gnh_plot_png_url;
+</script>
+   </main>
+
+<footer>
+  <div class="container footer-inner">
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="/consulting">Consulting</a>
+      <a href="/api">API</a>
+      <a href="/thesis">Thesis</a>
+      <a href="/oracle">Oracle</a>
+      <a href="/soulcoin">Soulcoin</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/gnh-work-statement">Work Statement</a>
+      <a class="cta" href="/socials">Socials</a>
+      <a class="cta" href="/contact">Contact</a>
+    </nav>
+    <div class="footer-meta">© <span id="y"></span> La Matriz · </div>
+  </div>
+</footer>
