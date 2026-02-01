@@ -73,3 +73,25 @@ def gnh_plot_base64(indicators: Dict[str, float]) -> str:
     buf.seek(0)
 
     return base64.b64encode(buf.read()).decode("utf-8")
+# core/gnh.py
+import io
+import matplotlib.pyplot as plt
+from typing import Dict
+
+def gnh_plot_png(indicators: Dict[str, float]) -> bytes:
+    labels = list(indicators.keys())
+    values = list(indicators.values())
+
+    fig = plt.figure(figsize=(8, 5))
+    plt.barh(labels, values)
+    plt.gca().invert_yaxis()
+    plt.xlabel("Score")
+    plt.title("GNH Indicator Similarity")
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png", dpi=150)
+    plt.close(fig)
+    buf.seek(0)
+
+    return buf.read()
