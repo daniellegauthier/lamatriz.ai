@@ -18,10 +18,7 @@ Color as interface between inner knowing and outer data — a lightweight, track
 * **`contact.html`** —
 * **`privacy.html`** —
 * **`terms.html`** —
-* **`/assets/img/`** — figures & logo used across pages (PNG/JPG/SVG).
-* **`/assets/fonts/`** — Inter Variable (served via Google Fonts on the one-pager; you can self-host if preferred).
-
-No frameworks, no build step — just HTML/CSS/JS.
+* **`/assets/img/`** — figures & logo used across pages
 
 ---
 
@@ -60,25 +57,6 @@ All colors are centralized in `style.css` under `:root`.
 > Light–mode tokens are also defined via `@media (prefers-color-scheme: light)`.
 > Typography: Inter (variable); sizes use `clamp()` for responsive scaling.
 
----
-
-## Local development
-
-This is a static site. Use any static server:
-
-```bash
-# Option 1: Python 3
-python3 -m http.server 8000
-
-# Option 2: Node
-npx serve .
-
-# Option 3: VS Code Live Server extension
-```
-
-Open [http://localhost:8000](http://localhost:8000) and browse the pages.
-
----
 
 ## Oracle preview (frontend)
 
