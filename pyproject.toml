@@ -3,10 +3,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lamatriz"
+name = "lamatriz-core"
 version = "0.1.0"
-description = "La Matriz Consulting Semantic Color Math API"
-readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
@@ -18,9 +16,8 @@ dependencies = [
 dev = [
     "pytest",
     "spacy",
-    "matplotlib",
 ]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["lamatriz*"]
+include = ["core*"]
