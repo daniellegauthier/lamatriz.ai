@@ -331,3 +331,25 @@ grid-auto-rows:120px;
 }
 
 }
+
+.table-thin {
+border-collapse: collapse;
+width: 100%;
+font-size: 14px;
+}
+
+.table-thin th,
+.table-thin td {
+border: 1px solid rgba(0,0,0,0.35);
+padding: 6px 8px;
+text-align: left;
+font-weight: normal;
+}
+
+.table-thin th {
+border-bottom: 1px solid rgba(0,0,0,0.5);
+}
+
+.table-thin tr:last-child td {
+border-bottom: 1px solid rgba(0,0,0,0.35);
+}
