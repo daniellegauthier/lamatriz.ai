@@ -51,275 +51,293 @@
     <a class="btn ghost" href="/physicalmagnetism.html/contact">Workshops & Products</a>
   </div>
 
-  <!-- Mini-demo (enhanced) -->
-  <div id="mini-demo" aria-live="polite">
-    <label for="demoInput" class="visually-hidden">Type a feeling or situation</label>
-    <input id="demoInput" type="text" placeholder="Type a feeling or situation (e.g., 'inspired but not creative')">
-    <div class="meta" id="demoSeeds" style="margin-top:8px"></div>
+   <!-- Live-ish preview -->
+ <section class="grid" id="preview">
+  <div class="container">
+    <article class="card" style="grid-column:1/-1">
+      <div class="icon" aria-hidden="true"></div>
+      <h2>Preview a color sequence</h2>
+      <p>Type a few words (e.g., “tired but hopeful before a hard conversation”). Tune the sliders, then Generate to see the chromatic path.</p>
 
-    <!-- sequence chips -->
-    <div id="seq" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px"></div>
+      <!-- text seed (optional) -->
+      <div class="cta-group">
+        <input id="oracle-input" type="text" placeholder="Type your feeling or situation…" aria-label="Oracle input" style="flex:1;min-width:260px">
+      </div>
 
-    <!-- momentum bars -->
-    <div style="margin-top:8px">
-      <div class="meta">Momentum (distance between steps, 0–255)</div>
-      <div id="momentum" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;height:64px"></div>
-    </div>
+      <!-- controls -->
+      <div id="controls" style="display:grid;grid-template-columns:repeat(6,minmax(160px,1fr));gap:12px;margin-top:12px">
+        <label> Mass
+          <input id="mass" type="range" min="-1" max="1" step="0.05" value="0.15" />
+          <span class="meta" id="massVal">0.15</span>
+        </label>
+        <label> Voltage
+          <input id="voltage" type="range" min="0" max="1" step="0.05" value="0.20" />
+          <span class="meta" id="voltageVal">0.20</span>
+        </label>
+        <label> Charge (magnetism)
+          <input id="charge" type="range" min="0.1" max="2.0" step="0.05" value="1.45" />
+          <span class="meta" id="chargeVal">1.45</span>
+        </label>
+        <label> Null Time
+          <input id="nulltime" type="range" min="0" max="0.9" step="0.05" value="0.65" />
+          <span class="meta" id="nullVal">0.65</span>
+        </label>
+        <label> Length
+          <input id="length" type="range" min="4" max="32" step="1" value="9" />
+          <span class="meta" id="lenVal">9</span>
+        </label>
+        <label> Seed
+          <input id="seed" type="number" value="999" step="1" min="0" max="99999" />
+        </label>
+      </div>
 
-    <!-- words aligned to each RGB -->
-    <div id="seqWords" class="meta" style="margin-top:10px"></div>
+      <div class="cta-group" style="margin-top:12px">
+        <label style="flex:1">Start Color
+          <input id="startColor" type="text" placeholder="gold" style="width:100%">
+        </label>
+        <button class="btn primary" id="gen">Generate</button>
+        <button class="btn ghost" id="exportJson">Export JSON</button>
+        <button class="btn ghost" id="clear">Clear</button>
+      </div>
+
+      <!-- visual preview -->
+      <div id="sequence"
+           style="margin-top:14px;display:grid;grid-template-columns:repeat(11,1fr);gap:8px"
+           aria-live="polite"></div>
+
+      <!-- small log -->
+      <pre id="log" class="meta" style="margin-top:10px;white-space:pre-wrap"></pre>
+
+      <p class="meta" style="margin-top:10px;color:#B7BCCD">
+        This preview is non-diagnostic and runs entirely in your browser. No data is sent.
+      </p>
+    </article>
   </div>
 </section>
-
 <script>
-/* ================= La Matriz — Client-side Semantic Color Math mini-demo =================
-   Ports your Python pipeline to JS (no external libs).
-   - Fetch CSV mapping → build word<->RGB maps
-   - Preprocess input → tokens (stopwords + light lemmatizer)
-   - Seed selection (w/ similarity fallback)
-   - Generate coherent RGB sequence (length=6)
-   - Compute momentum (Euclidean deltas)
-   - Render sequence + momentum bars + top words
-============================================================================= */
+/* ---------- small helpers ---------- */
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const rand = (seed => () => (seed = (seed*1664525 + 1013904223)>>>0) / 4294967296)(123456789);
+function seededGen(seed){ let s = seed>>>0 || 1; return () => (s = (s*1664525 + 1013904223)>>>0)/4294967296; }
 
-const CSV_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/semantic_rgb_mapping-7Fyy0MQQFX3s6KmXIryYY5kH3cG2qk.csv";
-
-const ui = {
-  input: document.getElementById('demoInput'),
-  seq: document.getElementById('seq'),
-  momentum: document.getElementById('momentum'),
-  words: document.getElementById('seqWords'),
-  seeds: document.getElementById('demoSeeds')
-};
-
-// --- Basic stopwords (client-side) ---
-const STOP = new Set(("a,an,the,of,for,and,or,but,with,without,from,to,into,over,under,on,in,by,about,as,at,be,is,are,was,were,am,been,being,do,does,did,doing,have,has,had,having,i,me,my,our,ours,us,we,you,your,yours,he,him,his,she,her,hers,they,them,their,theirs,it,its,this,that,these,those,not,no,so,if,than,then,there,here,can,could,should,would,will,just,really,very,more,most,less,lot,lots").split(','));
-
-// --- light lemmatizer (plural/ing/ed) ---
-function lemma(w){
-  if (/ies$/.test(w)) return w.replace(/ies$/,'y');
-  if (/([sxz]|[cs]h)es$/.test(w)) return w.replace(/es$/,'');
-  if (/s$/.test(w) && !/ss$/.test(w)) return w.replace(/s$/,'');
-  if (/ing$/.test(w) && w.length>5) return w.replace(/ing$/,'');
-  if (/ed$/.test(w) && w.length>4) return w.replace(/ed$/,'');
-  return w;
-}
-
-function tokenize(text){
-  const words = (text.toLowerCase().match(/[a-z]+/g) || [])
-    .filter(w => w.length>1 && !STOP.has(w))
-    .map(lemma);
-  return words;
-}
-
-// --- CSV parsing robust to quotes ---
-function parseCSV(text){
-  const lines = text.trim().split(/\r?\n/);
-  const headers = splitCSVLine(lines[0]);
-  const rows = [];
-  for (let i=1;i<lines.length;i++){
-    const cells = splitCSVLine(lines[i]);
-    if (!cells.length) continue;
-    const obj = {};
-    headers.forEach((h,idx)=> obj[h]=cells[idx] ?? '');
-    rows.push(obj);
+function rgbToHsv(r,g,b){
+  r/=255; g/=255; b/=255;
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn;
+  let h=0;
+  if(d!==0){
+    if(mx===r) h=((g-b)/d)%6;
+    else if(mx===g) h=(b-r)/d + 2;
+    else h=(r-g)/d + 4;
+    h*=60; if(h<0) h+=360;
   }
-  return rows;
+  const s = mx===0?0:d/mx;
+  return [h,s,mx];
+}
+function hsvToRgb(h,s,v){
+  h=(h%360+360)%360; const c=v*s, x=c*(1-Math.abs((h/60)%2-1)), m=v-c;
+  let [r,g,b]=[0,0,0];
+  if(0<=h && h<60) [r,g,b]=[c,x,0];
+  else if(h<120) [r,g,b]=[x,c,0];
+  else if(h<180) [r,g,b]=[0,c,x];
+  else if(h<240) [r,g,b]=[0,x,c];
+  else if(h<300) [r,g,b]=[x,0,c];
+  else [r,g,b]=[c,0,x];
+  return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
+}
+function applyMass([r,g,b], mass){
+  const [h,s,v]=rgbToHsv(r,g,b);
+  const s2 = clamp(s*(1+0.75*mass),0,1);
+  const v2 = clamp(v*(1+0.50*mass),0,1);
+  return hsvToRgb(h,s2,v2);
+}
+function jaccard(a,b){ const A=new Set(a),B=new Set(b); const U=new Set([...A,...B]).size; const I=[...A].filter(x=>B.has(x)).length; return U?I/U:0; }
+function hex(c){ return '#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''); }
 
-  function splitCSVLine(line){
-    const out=[]; let cur=''; let q=false;
-    for (let i=0;i<line.length;i++){
-      const ch = line[i];
-      if (ch === '"'){ q = !q; continue; }
-      if (ch === ',' && !q){ out.push(cur); cur=''; }
-      else { cur += ch; }
+/* ---------- tiny in-browser dataset (13 colors) ---------- */
+const SEM = [
+  {name:'grey',   rgb:[170,170,170], sent:0.50, words:['precary','apposite']},
+  {name:'pink',   rgb:[250,0,90], sent:0.62, words:['ambitious','exquisite']},
+  {name:'gold',   rgb:[250,200,0],   sent:0.00, words:['technocracy','lotiform']},
+  {name:'nude',   rgb:[250,180,120], sent:0.55, words:['unextenuable','deft']},
+  {name:'orange', rgb:[250,110,0],  sent:0.95, words:['blurry','artesian']},
+  {name:'white',  rgb:[255,255,255], sent:0.00, words:['analeptical']},
+  {name:'blue',   rgb:[0,0,255],  sent:0.90, words:['photopathy','intelligent']},
+  {name:'green',  rgb:[0,255,0],   sent:0.65, words:['bulbous','heroic']},
+  {name:'red',    rgb:[255,0,0],   sent:0.45, words:['apophantic','candid']},
+  {name:'black',  rgb:[0,0,0],    sent:0.00, words:['swabble']},
+  {name:'brown',  rgb:[180,50,0],   sent:0.44, words:['notable','submissive']},
+  {name:'yellow', rgb:[255,255,0],  sent:0.50, words:['authority']},
+  {name:'purple', rgb:[180,50,255], sent:0.68, words:['brave','imaginative']},
+];
+// normalized sentiment for similarity
+const maxAbs = Math.max(...SEM.map(s=>Math.abs(s.sent)));
+SEM.forEach(s=>s.sentN = maxAbs ? (s.sent/maxAbs) : 0);
+
+/* ---------- similarity + next-state (magnetism) ---------- */
+function similarity(i,j,alpha=0.6){
+  const ds = Math.abs(SEM[i].sentN - SEM[j].sentN);
+  const sentSim = 1 - ds;                    // [0..1]
+  const wordSim = jaccard(SEM[i].words, SEM[j].words);
+  return alpha*sentSim + (1-alpha)*wordSim;  // [0..1]
+}
+function neutralIdx(){
+  const set = new Set(['grey','gray','white','nude','beige']);
+  let idx = SEM.map((c,i)=>set.has(c.name)?i:-1).filter(i=>i>=0);
+  if(!idx.length){
+    const order = SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
+    idx = order.slice(0,5);
+  }
+  return idx;
+}
+function chooseNext(cur, charge, rng){
+  const sims = SEM.map((_,j)=> similarity(cur,j));
+  const dist = sims.map(s=>1-Math.max(0,Math.min(1,s)));
+  const attr = dist.map((d,k)=> k===cur ? 0 : charge/Math.max(d,1e-3));
+  const wSum = attr.reduce((a,b)=>a+Math.max(0,b),0);
+  if(wSum===0) return Math.floor(rng()*SEM.length);
+  let r = rng()*wSum;
+  for(let j=0;j<attr.length;j++){
+    r -= Math.max(0,attr[j]);
+    if(r<=0) return j;
+  }
+  return SEM.length-1;
+}
+
+/* ---------- generator ---------- */
+function generate({length=11, seed=7, mass=0.15, voltage=0.2, charge=1.45, nullTime=0.65, startColor='' }={}){
+  const rng = seededGen(seed);
+  let start = SEM.findIndex(c=>c.name===String(startColor).trim().toLowerCase());
+  if(start<0){
+    // closest to neutral (= min |sentN|)
+    start = SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1])[0][0];
+  }
+  const neutrals = neutralIdx();
+  const seq = [];
+  let cur = start;
+
+  for(let t=0;t<length;t++){
+    const row = SEM[cur];
+    const item = {
+      t, name: row.name,
+      base_rgb: row.rgb.slice(),
+      rgb: applyMass(row.rgb, mass),
+      sentiment: row.sent,
+      words: row.words
+    };
+    seq.push(item);
+
+    // Null time (rest)
+    const pRest = nullTime * (1 - Math.abs(row.sentN));
+    if(rng() < pRest){
+      const ni = neutrals[Math.floor(rng()*neutrals.length)];
+      const nrow = SEM[ni];
+      seq.push({
+        t: t+0.5, name: nrow.name,
+        base_rgb: nrow.rgb.slice(),
+        rgb: applyMass(nrow.rgb, mass*0.2),
+        sentiment: nrow.sent,
+        words: nrow.words,
+        rest: true
+      });
     }
-    out.push(cur);
-    return out;
-  }
-}
 
-// --- Global maps/data ---
-let semantic = [];                 // {R,G,B, Original Words, New Words}
-let word2rgb = new Map();          // "word" -> [R,G,B]
-let rgb2words = new Map();         // "R_G_B" -> [word,...]
-let rgbRows = [];                  // [[R,G,B], ...]
-
-async function init(){
-  try{
-    const res = await fetch(CSV_URL, {mode:'cors'});
-    const txt = await res.text();
-    semantic = parseCSV(txt)
-      .map(row => ({ 
-        R: +row['R'], G:+row['G'], B:+row['B'],
-        orig: row['Original Words']||'', news: row['New Words']||''
-      }))
-      .filter(r => Number.isFinite(r.R) && Number.isFinite(r.G) && Number.isFinite(r.B));
-
-    for (const row of semantic){
-      const rgbKey = `${row.R}_${row.G}_${row.B}`;
-      const words = (row.orig + ',' + row.news)
-        .split(',')
-        .map(w => w.trim().toLowerCase())
-        .filter(Boolean);
-      for (const w of words){ word2rgb.set(w, [row.R,row.G,row.B]); }
-      rgb2words.set(rgbKey, words);
-      rgbRows.push([row.R,row.G,row.B]);
-    }
-  }catch(e){
-    console.warn('Semantic CSV load failed:', e);
-  }
-}
-init();
-
-// --- Similarity fallback (overlap + prefix) ---
-const allSemanticWords = () => Array.from(word2rgb.keys());
-function similarWords(tokens, limit=3){
-  const out = [];
-  const vocab = allSemanticWords();
-  for (const t of tokens){
-    const scores = [];
-    for (const w of vocab){
-      if (w.length < 3) continue;
-      const setT = new Set(t), setW = new Set(w);
-      const overlap = [...setT].filter(ch => setW.has(ch)).length / new Set([...setT,...setW]).size;
-      let pref=0; for (let i=0;i<Math.min(t.length,w.length);i++) if (t[i]===w[i]) pref++;
-      pref = pref / Math.max(t.length, w.length);
-      const score = 0.6*overlap + 0.4*pref;
-      if (score > 0.3) scores.push([w, score]);
-    }
-    scores.sort((a,b)=>b[1]-a[1]);
-    for (const [w] of scores.slice(0,limit)) out.push(w);
-  }
-  return out;
-}
-
-// --- Analyzer: counts + top 3 seeds ---
-function analyze(tokens){
-  const counts = {};
-  for (const t of tokens) counts[t] = (counts[t]||0)+1;
-  let seeds = tokens.filter(t => word2rgb.has(t));
-  if (seeds.length < 3) seeds = seeds.concat(similarWords(tokens));
-  seeds = seeds.filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);
-  return {counts, seeds};
-}
-
-// --- Helpers ---
-function nearestRGB(target){
-  let best = null, bestD = Infinity;
-  for (const rgb of rgbRows){
-    const d = (rgb[0]-target[0])**2 + (rgb[1]-target[1])**2 + (rgb[2]-target[2])**2;
-    if (d < bestD){ bestD = d; best = rgb; }
-  }
-  return best || target;
-}
-function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
-
-// --- Sequence generation (coherence≈0.7, length=6) ---
-function generateSequence(seeds, length=6, coherence=0.7){
-  const seedRGBs = seeds.map(w => word2rgb.get(w)).filter(Boolean);
-  let current = seedRGBs.length ? seedRGBs[Math.floor(Math.random()*seedRGBs.length)] 
-                                : rgbRows[Math.floor(Math.random()*rgbRows.length)];
-  const seq = [current];
-  for (let i=1;i<length;i++){
-    if (Math.random() < coherence){
-      const variation = randInt(10,50);
-      const cand = [
-        Math.max(0, Math.min(255, current[0] + randInt(-variation, variation))),
-        Math.max(0, Math.min(255, current[1] + randInt(-variation, variation))),
-        Math.max(0, Math.min(255, current[2] + randInt(-variation, variation)))
-      ];
-      current = nearestRGB(cand);
-    }else{
-      current = rgbRows[Math.floor(Math.random()*rgbRows.length)];
-    }
-    seq.push(current);
+    // magnetism step (voltage nudges charge)
+    cur = chooseNext(cur, charge*(1+0.4*voltage), rng);
   }
   return seq;
 }
 
-// --- Momentum (distance & normalized direction) ---
-function momentum(seq){
-  const out=[];
-  for (let i=1;i<seq.length;i++){
-    const prev=seq[i-1], curr=seq[i];
-    const dir = [curr[0]-prev[0], curr[1]-prev[1], curr[2]-prev[2]];
-    const mag = Math.hypot(dir[0],dir[1],dir[2]);
-    const norm = mag ? dir.map(d=>d/mag) : [0,0,0];
-    out.push({distance: mag, direction: dir, normalized_direction: norm, magnitude: mag});
-  }
-  return out;
+/* ---------- UI wiring ---------- */
+const el = id => document.getElementById(id);
+const seqEl = el('sequence'), logEl = el('log');
+const mass = el('mass'), voltage = el('voltage'), charge = el('charge'), nulltime = el('nulltime'),
+      len = el('length'), seed = el('seed'), startColor = el('startColor');
+const input = el('oracle-input');
+const genBtn = el('gen'), clrBtn = el('clear'), exportBtn = el('exportJson');
+
+function syncVals(){
+  el('massVal').textContent = Number(mass.value).toFixed(2);
+  el('voltageVal').textContent = Number(voltage.value).toFixed(2);
+  el('chargeVal').textContent = Number(charge.value).toFixed(2);
+  el('nullVal').textContent = Number(nulltime.value).toFixed(2);
+  el('lenVal').textContent = String(len.value);
 }
-
-// --- Rendering ---
-function rgbStyle(rgb){ return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`; }
-function render(seq, mom){
-  ui.seq.innerHTML = '';
-  ui.momentum.innerHTML = '';
-  ui.words.innerHTML = '';
-
-  seq.forEach((rgb, i) => {
-    const cell = document.createElement('div');
-    cell.style.height='76px';
-    cell.style.borderRadius='10px';
-    cell.style.border='1px solid var(--border)';
-    cell.style.background = rgbStyle(rgb);
-    cell.title = `#${rgb.map(v=>v.toString(16).padStart(2,'0')).join('')}`;
-    ui.seq.appendChild(cell);
-
-    // bars (mom has length seq-1)
-    const barWrap = document.createElement('div');
-    if (i < mom.length){
-      const bar = document.createElement('div');
-      bar.style.height = `${Math.max(2, (mom[i].magnitude/255)*100)}%`;
-      bar.style.background = 'var(--accent-2)'; // yellow
-      bar.style.border = '1px solid var(--border)';
-      bar.style.borderRadius = '6px';
-      barWrap.appendChild(bar);
-    }
-    ui.momentum.appendChild(barWrap);
-  });
-
-  // attach up to two words per color
-  const labels = seq.map(rgb => {
-    const key = `${rgb[0]}_${rgb[1]}_${rgb[2]}`;
-    const words = (rgb2words.get(key) || []).slice(0,2);
-    return words.length ? words.join(', ') : '';
-  });
-  ui.words.textContent = labels.some(Boolean) ? labels.map((w,i)=> `${i+1}: ${w}`).join('  •  ') : '…';
-
-}
-
-// --- Orchestrate on input (debounced) ---
-let tId=null;
-function run(text){
-  if (!semantic.length){ renderPlaceholder(text); return; }
-  const tokens = tokenize(text);
-  const {seeds} = analyze(tokens);
-  ui.seeds.textContent = seeds.length ? `Seeds: ${seeds.join(', ')}` : 'Seeds: (auto)';
-  const seq = generateSequence(seeds);
-  const mom = momentum(seq);
-  render(seq, mom);
-}
-function renderPlaceholder(text){
-  // fallback gradient chips
-  const seq = Array.from({length:6}, (_,i)=>[randInt(0,255), randInt(0,255), randInt(0,255)]);
-  const mom = momentum(seq);
-  ui.seeds.textContent = 'Seeds: (loading model…)';
-  render(seq, mom);
-}
-
-ui.input?.addEventListener('input', () => {
-  clearTimeout(tId);
-  const value = ui.input.value.trim();
-  tId = setTimeout(()=> run(value || 'inspired but not creative'), 280);
+['input','change'].forEach(evt=>{
+  [mass,voltage,charge,nulltime,len].forEach(c=>c.addEventListener(evt, syncVals));
 });
-ui.input?.addEventListener('keydown', (e)=>{ if (e.key==='Enter'){ run(ui.input.value.trim()); }});
+syncVals();
 
-// initial render
-run('inspired but not creative');
+let lastSeq = null;
+
+function render(seq){
+  lastSeq = seq;
+  // grid size from sequence length
+  const steps = seq.length;
+  const cols = Math.max(11, steps);
+  seqEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  seqEl.innerHTML = '';
+
+  seq.forEach((s,i)=>{
+    const cell = document.createElement('div');
+    cell.style.height = '76px';
+    cell.style.borderRadius = '10px';
+    cell.style.border = '1px solid var(--border)';
+    cell.style.background = hex(s.rgb);
+    cell.title = `${i+1} — ${s.name}${s.rest?' (rest)':''} — RGB ${s.rgb.join(',')} — S ${s.sentiment.toFixed(2)}`;
+    const cap = document.createElement('div');
+    cap.textContent = `${i+1}`;
+    cap.style.fontSize = '12px';
+    cap.style.color = 'var(--text)';
+    cap.style.textAlign = 'center';
+    cap.style.marginTop = '6px';
+    cap.style.textShadow = '0 1px 2px rgba(0,0,0,.35)';
+    cell.appendChild(cap);
+    seqEl.appendChild(cell);
+  });
+
+  logEl.textContent = seq.slice(0,20).map((s,i)=>
+    `${String(i).padStart(2,'0')} — ${s.name}${s.rest?' (rest)':''} — ${hex(s.rgb)}`).join('\n');
+}
+
+function run(){
+  const seedFromText = (txt)=>{
+    let h = 2166136261>>>0;
+    for(let i=0;i<txt.length;i++){ h ^= txt.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h>>>0;
+  };
+  const seedVal = String(seed.value||'').trim().length ? Number(seed.value) : seedFromText(input.value||'');
+  const seq = generate({
+    length: Number(len.value),
+    seed: seedVal,
+    mass: Number(mass.value),
+    voltage: Number(voltage.value),
+    charge: Number(charge.value),
+    nullTime: Number(nulltime.value),
+    startColor: startColor.value || ''
+  });
+  render(seq);
+}
+genBtn?.addEventListener('click', run);
+input?.addEventListener('keydown', e=>{ if(e.key==='Enter') run(); });
+clrBtn?.addEventListener('click', ()=>{ seqEl.innerHTML=''; logEl.textContent=''; input.value=''; lastSeq=null; });
+
+exportBtn?.addEventListener('click', ()=>{
+  if(!lastSeq){ logEl.textContent = 'Generate a sequence first.'; return; }
+  const payload = {version:1, engine:'magnetism-to-color(js)', sequence:lastSeq};
+  const s = JSON.stringify(payload, null, 2);
+  // copy to clipboard
+  navigator.clipboard?.writeText(s).catch(()=>{});
+  // also download file
+  const blob = new Blob([s], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'lamatriz_sequence.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  logEl.textContent = 'Exported JSON (copied to clipboard + downloaded).';
+});
+
 </script>
-
   <section class="grid">
     <!-- 6 cards as described above -->
   </section>
