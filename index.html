@@ -1,389 +1,585 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Physical Magnetism — Linguistic Cartography for Co-Liberation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cybernetic feedback systems and chromatic intelligence tools for bottom-up design. For researchers, cooperatives, and governance ecologies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inconsolata:wght@300;400;500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1a1611;
+    --ink-mid:    #3d3730;
+    --ink-light:  #7a6f5e;
+    --paper:      #f4f0e6;
+    --paper-warm: #ede8d8;
+    --rule:       #c8c0ae;
+    --rule-thin:  #ddd6c5;
+    --accent:     #8b3a1c;
+    --accent-2:   #4a6741;
+    --gap:        1px solid var(--rule-thin);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; background: var(--paper); color: var(--ink); scroll-behavior: smooth; }
+  body { font-family: 'Inconsolata', monospace; font-weight: 300; line-height: 1.6; background: var(--paper); }
+
+  /* ── HEADER ── */
+  header { border-bottom: 1px solid var(--rule); padding: 0 2rem; }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; height: 3.2rem;
+  }
+  .logo {
+    display: flex; align-items: center; gap: .6rem;
+    text-decoration: none;
+    font-family: 'Inconsolata', monospace; font-size: .75rem;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink);
+  }
+  .logo img { height: 28px; width: auto; }
+  nav { display: flex; gap: 0; }
+  .subnav { position: relative; }
+  .subnavbtn, nav a {
+    background: none; border: none; border-left: var(--gap);
+    font-family: 'Inconsolata', monospace; font-size: .72rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light);
+    cursor: pointer; padding: .5rem .9rem; text-decoration: none; display: block; white-space: nowrap;
+  }
+  .subnavbtn:hover, nav a:hover { color: var(--ink); }
+  .subnav-content {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--paper-warm); border: 1px solid var(--rule); z-index: 99; min-width: 140px;
+  }
+  .subnav-content a { border-left: none; border-top: var(--gap); }
+  .subnav:hover .subnav-content { display: block; }
+
+  /* ── HOMEPAGE HERO ── */
+  .home-hero {
+    min-height: 88vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+    position: relative;
+  }
+  .home-hero-left {
+    padding: 5rem 3rem 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid var(--rule);
+  }
+  .home-hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: sepia(.3) contrast(1.05);
+    opacity: .78;
+  }
+  .home-hero-right-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(244,240,230,.05) 0%, rgba(244,240,230,.55) 100%);
+  }
+
+  .home-label {
+    font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-light);
+    margin-bottom: 2rem;
+  }
+  .home-hero h1 {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .home-hero h1 em { font-style: italic; color: var(--accent); }
+
+  .home-sub {
+    margin-top: auto;
+    padding-top: 3rem;
+  }
+  .home-sub p {
+    font-size: .85rem;
+    color: var(--ink-mid);
+    line-height: 1.75;
+    max-width: 42ch;
+    margin-bottom: 1rem;
+  }
+  .btn {
+    font-family: 'Inconsolata', monospace; font-size: .72rem;
+    letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+    padding: .55rem 1.1rem; border: 1px solid var(--ink); color: var(--ink);
+    background: none; cursor: pointer; transition: background .15s, color .15s; display: inline-block;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .cta-group { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+
+  /* ── THESIS BANNER ── */
+  .thesis-band {
+    border-bottom: 1px solid var(--rule);
+    padding: 1rem 2rem;
+    background: var(--paper-warm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .thesis-band p {
+    font-size: .72rem;
+    letter-spacing: .05em;
+    color: var(--ink-mid);
+  }
+  .thesis-band a {
+    font-size: .65rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .thesis-band a:hover { text-decoration: underline; }
+
+  /* ── PREVIEW SECTION ── */
+  .preview-section {
+    padding: 5rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .preview-inner { max-width: 1200px; margin: 0 auto; }
+  .section-header {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    align-items: baseline;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-label {
+    font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-light);
+  }
+  .section-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  /* oracle tool */
+  .oracle-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: .8rem;
+    margin-bottom: 1.2rem;
+  }
+  label {
+    display: flex; flex-direction: column;
+    font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-light); gap: .3rem;
+  }
+  input[type="range"] { width: 100%; accent-color: var(--ink); }
+  input[type="text"], input[type="number"] {
+    font-family: 'Inconsolata', monospace; font-size: .8rem;
+    background: var(--paper-warm); border: 1px solid var(--rule);
+    padding: .4rem .6rem; color: var(--ink); width: 100%;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    outline: 1px solid var(--ink); border-color: var(--ink);
+  }
+  .input-row { display: flex; gap: .6rem; margin-bottom: 1rem; align-items: flex-end; }
+  .input-row input[type="text"] { flex: 1; font-size: .85rem; padding: .55rem .7rem; }
+  .val-badge {
+    font-size: .65rem; color: var(--ink-light); font-weight: 700; letter-spacing: .05em;
+  }
+  #sequence {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 6px;
+    margin-top: 1rem;
+  }
+  .seq-cell {
+    height: 72px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,.08);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 6px;
+  }
+  .seq-cell span { font-size: .6rem; color: rgba(255,255,255,.7); text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  #log {
+    margin-top: .8rem; font-size: .65rem; color: var(--ink-light);
+    white-space: pre-wrap; line-height: 1.7; max-height: 180px; overflow-y: auto;
+  }
+  .tool-note { font-size: .65rem; color: var(--ink-light); margin-top: .6rem; font-style: italic; }
+
+  /* ── 3-COL INFO ── */
+  .info-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+  .info-inner { max-width: 1200px; margin: 0 auto; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    border-top: 1px solid var(--ink); margin-top: 2.5rem;
+  }
+  .info-card {
+    padding: 2.5rem 1.5rem;
+    border-right: 1px solid var(--rule);
+  }
+  .info-card:last-child { border-right: none; }
+  .info-num {
+    font-size: .62rem; letter-spacing: .2em; color: var(--ink-light); display: block; margin-bottom: 1rem;
+  }
+  .info-card h3 {
+    font-family: 'IM Fell English', serif; font-size: 1.1rem; font-weight: 400;
+    color: var(--ink); margin-bottom: .8rem;
+  }
+  .info-card p { font-size: .78rem; color: var(--ink-mid); line-height: 1.7; }
+
+  /* ── BOTTOM CTA ── */
+  .home-cta {
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Garnier-inspired geometry */
+  .home-cta::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    border: 1px solid var(--rule-thin);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .home-cta-text {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.3rem, 3vw, 2.2rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    line-height: 1.4;
+    position: relative; z-index: 1;
+  }
+  .home-cta .cta-group { justify-content: center; position: relative; z-index: 1; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--ink); padding: 1.5rem 2rem; background: var(--paper-warm); }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-meta { font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-light); }
+  footer nav { display: flex; flex-wrap: wrap; gap: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    .home-hero { grid-template-columns: 1fr; min-height: auto; }
+    .home-hero-right { height: 280px; }
+    .home-hero-left { padding: 3rem 1.5rem; border-right: none; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-card { border-right: none; border-bottom: var(--gap); }
+    .oracle-controls { grid-template-columns: 1fr 1fr; }
+    .section-header { grid-template-columns: 1fr; gap: .5rem; }
+  }
+
+  /* fade-in entrance */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .home-label { animation: fadeUp .6s .1s both; }
+  .home-hero h1 { animation: fadeUp .7s .2s both; }
+  .home-sub { animation: fadeUp .7s .4s both; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
 <header>
-  <div class="container header-inner">
+  <div class="header-inner">
     <a class="logo" href="/physicalmagnetism.html/">
-      <img src="./assets/img/la matriz root only.png" alt="La Matriz Consulting logo">
+      <img src="./assets/img/la matriz root only.png" alt="Physical Magnetism">
       <span>physicalmagnetism.html</span>
     </a>
-     <div class="navbar">
-    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
-      <nav id="primaryNav">
+    <nav>
       <div class="subnav">
-      <button class="subnavbtn">Request Service</button>
-      <div class="subnav-content">
-         <a href="/physicalmagnetism.html/consulting" aria-current="page">Consulting</a>
+        <button class="subnavbtn">Request Service</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/consulting">Consulting</a>
+        </div>
       </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">More Info</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/api">API</a>
-        <a href="/physicalmagnetism.html/thesis">Thesis</a>
+      <div class="subnav">
+        <button class="subnavbtn">More Info</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/api">API</a>
+          <a href="/physicalmagnetism.html/thesis">Thesis</a>
+        </div>
       </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">Contracts</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/privacy">Privacy</a>
-        <a href="/physicalmagnetism.html/terms">Terms</a>
-        <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
+      <div class="subnav">
+        <button class="subnavbtn">Contracts</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/privacy">Privacy</a>
+          <a href="/physicalmagnetism.html/terms">Terms</a>
+          <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
+        </div>
       </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">About</button>
-      <div class="subnav-content">
-        <a class="cta" href="/physicalmagnetism.html/socials">Socials</a>
-        <a class="cta" href="/physicalmagnetism.html/contact">Contact</a>
+      <div class="subnav">
+        <button class="subnavbtn">About</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/socials">Socials</a>
+          <a href="/physicalmagnetism.html/contact">Contact</a>
+        </div>
       </div>
-     </div>
-      </nav>
+    </nav>
   </div>
 </header>
 
-
-<head>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-
-<main>
- <section class="hero">
-  <h1>Bucket sorting intelligence for social cohesion.</h1>
-  <p>Cybernetic feedback systems + human-centered designs for navigation.</p>
-   
-  <div class="cta-group">
-    <a class="btn ghost" href="/physicalmagnetism.html/consulting">Explore Services</a>
-    <a class="btn ghost" href="/physicalmagnetism.html/contact">Contact</a>
-  </div>
-
-   <!-- Live-ish preview -->
- <section class="grid" id="preview">
-  <div class="container">
-    <article class="card" style="grid-column:1/-1">
-      <div class="icon" aria-hidden="true"></div>
-      <h2>Preview a color sequence</h2>
-      <p>Type a few words (e.g., “tired but hopeful before a hard conversation”). Tune the sliders, then Generate to see the chromatic path.</p>
-
-      <!-- text seed (optional) -->
+<!-- ── HERO ── -->
+<section class="home-hero">
+  <div class="home-hero-left">
+    <div>
+      <p class="home-label">Physical Magnetism &nbsp;·&nbsp; Linguistic Cartography</p>
+      <h1>Bucket sorting<br>intelligence for<br><em>social cohesion.</em></h1>
+    </div>
+    <div class="home-sub">
+      <p>Cybernetic feedback systems and human-centered design for navigation. For researchers, cooperatives, governance ecologies, and communities building from the inside out.</p>
+      <p>Guided by meaning. Rooted in story. Informed by data.</p>
       <div class="cta-group">
-        <input id="oracle-input" type="text" placeholder="Type your feeling or situation…" aria-label="Oracle input" style="flex:1;min-width:260px">
+        <a class="btn primary" href="/physicalmagnetism.html/consulting">Explore Services</a>
+        <a class="btn" href="/physicalmagnetism.html/contact">Contact</a>
       </div>
-
-      <!-- controls -->
-      <div id="controls" style="display:grid;grid-template-columns:repeat(6,minmax(160px,1fr));gap:12px;margin-top:12px">
-        <label> Mass
-          <input id="mass" type="range" min="-1" max="1" step="0.05" value="0.15" />
-          <span class="meta" id="massVal">0.15</span>
-        </label>
-        <label> Voltage
-          <input id="voltage" type="range" min="0" max="1" step="0.05" value="0.20" />
-          <span class="meta" id="voltageVal">0.20</span>
-        </label>
-        <label> Charge (magnetism)
-          <input id="charge" type="range" min="0.1" max="2.0" step="0.05" value="1.45" />
-          <span class="meta" id="chargeVal">1.45</span>
-        </label>
-        <label> Null Time
-          <input id="nulltime" type="range" min="0" max="0.9" step="0.05" value="0.65" />
-          <span class="meta" id="nullVal">0.65</span>
-        </label>
-        <label> Length
-          <input id="length" type="range" min="4" max="32" step="1" value="9" />
-          <span class="meta" id="lenVal">9</span>
-        </label>
-        <label> Seed
-          <input id="seed" type="number" value="999" step="1" min="0" max="99999" />
-        </label>
-      </div>
-
-      <div class="cta-group" style="margin-top:12px">
-        <label style="flex:1">Start Color
-          <input id="startColor" type="text" placeholder="gold" style="width:100%">
-        </label>
-        <button class="btn primary" id="gen">Generate</button>
-        <button class="btn ghost" id="exportJson">Export JSON</button>
-        <button class="btn ghost" id="clear">Clear</button>
-      </div>
-
-      <!-- visual preview -->
-      <div id="sequence"
-           style="margin-top:14px;display:grid;grid-template-columns:repeat(11,1fr);gap:8px"
-           aria-live="polite"></div>
-
-      <!-- small log -->
-      <pre id="log" class="meta" style="margin-top:10px;white-space:pre-wrap"></pre>
-
-      <p class="meta" style="margin-top:10px;color:#B7BCCD">
-        This preview is non-diagnostic and runs entirely in your browser. No data is sent.
-      </p>
-    </article>
+    </div>
+  </div>
+  <div class="home-hero-right">
+    <img src="./assets/img/root.jpeg" alt="Exposed root system in red mulch — radiating, decomposing, generative">
+    <div class="home-hero-right-overlay"></div>
   </div>
 </section>
-<script>
-/* ---------- small helpers ---------- */
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-const rand = (seed => () => (seed = (seed*1664525 + 1013904223)>>>0) / 4294967296)(123456789);
-function seededGen(seed){ let s = seed>>>0 || 1; return () => (s = (s*1664525 + 1013904223)>>>0)/4294967296; }
 
+<!-- ── THESIS BAND ── -->
+<div class="thesis-band">
+  <p>Powered by Linguistic Cartography — a 4D semantic mapping system translating words into geometric patterns and beneficial choices.</p>
+  <a href="/physicalmagnetism.html/thesis">Read the Thesis →</a>
+</div>
+
+<!-- ── ORACLE PREVIEW ── -->
+<section class="preview-section" id="preview">
+  <div class="preview-inner">
+    <div class="section-header">
+      <span class="section-label">Try It</span>
+      <h2 class="section-title">Preview a color sequence</h2>
+    </div>
+
+    <p style="font-size:.82rem; color:var(--ink-mid); margin-bottom:1.5rem; max-width:60ch;">
+      Type a few words — a feeling, a situation, a tension. Tune the parameters. Generate to see the chromatic path your physics traces.
+    </p>
+
+    <div class="input-row">
+      <input id="oracle-input" type="text" placeholder="e.g. tired but hopeful before a hard conversation" aria-label="Oracle input">
+      <button class="btn primary" id="gen">Generate</button>
+      <button class="btn" id="exportJson">Export JSON</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+
+    <div class="oracle-controls">
+      <label>Mass<input id="mass" type="range" min="-1" max="1" step="0.05" value="0.15"><span class="val-badge" id="massVal">0.15</span></label>
+      <label>Voltage<input id="voltage" type="range" min="0" max="1" step="0.05" value="0.20"><span class="val-badge" id="voltageVal">0.20</span></label>
+      <label>Charge (magnetism)<input id="charge" type="range" min="0.1" max="2.0" step="0.05" value="1.45"><span class="val-badge" id="chargeVal">1.45</span></label>
+      <label>Null Time<input id="nulltime" type="range" min="0" max="0.9" step="0.05" value="0.65"><span class="val-badge" id="nullVal">0.65</span></label>
+      <label>Length<input id="length" type="range" min="4" max="32" step="1" value="9"><span class="val-badge" id="lenVal">9</span></label>
+      <label>Start Color<input id="startColor" type="text" placeholder="gold"></label>
+      <label>Seed<input id="seed" type="number" value="999" step="1" min="0" max="99999"></label>
+    </div>
+
+    <div id="sequence" aria-live="polite"></div>
+    <pre id="log" class="meta"></pre>
+    <p class="tool-note">This preview is non-diagnostic and runs entirely in your browser. No data is sent.</p>
+  </div>
+</section>
+
+<!-- ── 3-COL INFO ── -->
+<section class="info-section">
+  <div class="info-inner">
+    <div class="section-header" style="margin-bottom:0;">
+      <span class="section-label">Practice</span>
+      <h2 class="section-title">Three interlocking domains</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <span class="info-num">01</span>
+        <h3>Sensing</h3>
+        <p>Model design, architectures, and evaluation frameworks for chromatic semantic systems. AI that listens to relational signal.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-num">02</span>
+        <h3>Color Geometry</h3>
+        <p>Semantic mapping, clustering, sequence design, and symbolic reasoning UX. Words as four-dimensional navigational data.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-num">03</span>
+        <h3>Data Sovereignty</h3>
+        <p>Decentralized architectures, consent practices, and privacy rituals. Communities owning their own data and their own story.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="home-cta">
+  <p class="home-cta-text">A consulting space for poetic data and practical change. Confide in me.</p>
+  <div class="cta-group">
+    <a class="btn primary" href="/physicalmagnetism.html/consulting">Confide in me</a>
+    <a class="btn" href="/physicalmagnetism.html/thesis">Read the thesis</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-meta">© <span id="y"></span> Physical Magnetism</div>
+    <nav>
+      <div class="subnav">
+        <button class="subnavbtn">Request Service</button>
+        <div class="subnav-content"><a href="/physicalmagnetism.html/consulting">Consulting</a></div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Info</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/api">API</a>
+          <a href="/physicalmagnetism.html/thesis">Thesis</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Contracts</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/privacy">Privacy</a>
+          <a href="/physicalmagnetism.html/terms">Terms</a>
+          <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">About</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/socials">Socials</a>
+          <a href="/physicalmagnetism.html/contact">Contact</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</footer>
+
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* ── color engine (verbatim from original) ── */
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+function seededGen(seed){ let s = seed>>>0 || 1; return () => (s = (s*1664525 + 1013904223)>>>0)/4294967296; }
 function rgbToHsv(r,g,b){
   r/=255; g/=255; b/=255;
   const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn;
   let h=0;
-  if(d!==0){
-    if(mx===r) h=((g-b)/d)%6;
-    else if(mx===g) h=(b-r)/d + 2;
-    else h=(r-g)/d + 4;
-    h*=60; if(h<0) h+=360;
-  }
-  const s = mx===0?0:d/mx;
-  return [h,s,mx];
+  if(d!==0){ if(mx===r) h=((g-b)/d)%6; else if(mx===g) h=(b-r)/d+2; else h=(r-g)/d+4; h*=60; if(h<0) h+=360; }
+  return [h, mx===0?0:d/mx, mx];
 }
 function hsvToRgb(h,s,v){
   h=(h%360+360)%360; const c=v*s, x=c*(1-Math.abs((h/60)%2-1)), m=v-c;
   let [r,g,b]=[0,0,0];
-  if(0<=h && h<60) [r,g,b]=[c,x,0];
-  else if(h<120) [r,g,b]=[x,c,0];
-  else if(h<180) [r,g,b]=[0,c,x];
-  else if(h<240) [r,g,b]=[0,x,c];
-  else if(h<300) [r,g,b]=[x,0,c];
-  else [r,g,b]=[c,0,x];
+  if(h<60)[r,g,b]=[c,x,0]; else if(h<120)[r,g,b]=[x,c,0]; else if(h<180)[r,g,b]=[0,c,x];
+  else if(h<240)[r,g,b]=[0,x,c]; else if(h<300)[r,g,b]=[x,0,c]; else[r,g,b]=[c,0,x];
   return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
 }
-function applyMass([r,g,b], mass){
-  const [h,s,v]=rgbToHsv(r,g,b);
-  const s2 = clamp(s*(1+0.75*mass),0,1);
-  const v2 = clamp(v*(1+0.50*mass),0,1);
-  return hsvToRgb(h,s2,v2);
-}
-function jaccard(a,b){ const A=new Set(a),B=new Set(b); const U=new Set([...A,...B]).size; const I=[...A].filter(x=>B.has(x)).length; return U?I/U:0; }
+function applyMass([r,g,b],mass){ const [h,s,v]=rgbToHsv(r,g,b); return hsvToRgb(h,clamp(s*(1+.75*mass),0,1),clamp(v*(1+.5*mass),0,1)); }
+function jaccard(a,b){ const A=new Set(a),B=new Set(b),U=new Set([...A,...B]).size,I=[...A].filter(x=>B.has(x)).length; return U?I/U:0; }
 function hex(c){ return '#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''); }
 
-/* ---------- tiny in-browser dataset (13 colors) ---------- */
-const SEM = [
-  {name:'grey',   rgb:[170,170,170], sent:0.50, words:['precary','apposite']},
-  {name:'pink',   rgb:[250,0,90], sent:0.62, words:['ambitious','exquisite']},
-  {name:'gold',   rgb:[250,200,0],   sent:0.00, words:['technocracy','lotiform']},
-  {name:'nude',   rgb:[250,180,120], sent:0.55, words:['unextenuable','deft']},
-  {name:'orange', rgb:[250,110,0],  sent:0.95, words:['blurry','artesian']},
-  {name:'white',  rgb:[255,255,255], sent:0.00, words:['analeptical']},
-  {name:'blue',   rgb:[0,0,255],  sent:0.90, words:['photopathy','intelligent']},
-  {name:'green',  rgb:[0,255,0],   sent:0.65, words:['bulbous','heroic']},
-  {name:'red',    rgb:[255,0,0],   sent:0.45, words:['apophantic','candid']},
-  {name:'black',  rgb:[0,0,0],    sent:0.00, words:['swabble']},
-  {name:'brown',  rgb:[180,50,0],   sent:0.44, words:['notable','submissive']},
-  {name:'yellow', rgb:[255,255,0],  sent:0.50, words:['authority']},
-  {name:'purple', rgb:[180,50,255], sent:0.68, words:['brave','imaginative']},
+const SEM=[
+  {name:'grey',rgb:[170,170,170],sent:.50,words:['precary','apposite']},
+  {name:'pink',rgb:[250,0,90],sent:.62,words:['ambitious','exquisite']},
+  {name:'gold',rgb:[250,200,0],sent:.00,words:['technocracy','lotiform']},
+  {name:'nude',rgb:[250,180,120],sent:.55,words:['unextenuable','deft']},
+  {name:'orange',rgb:[250,110,0],sent:.95,words:['blurry','artesian']},
+  {name:'white',rgb:[255,255,255],sent:.00,words:['analeptical']},
+  {name:'blue',rgb:[0,0,255],sent:.90,words:['photopathy','intelligent']},
+  {name:'green',rgb:[0,255,0],sent:.65,words:['bulbous','heroic']},
+  {name:'red',rgb:[255,0,0],sent:.45,words:['apophantic','candid']},
+  {name:'black',rgb:[0,0,0],sent:.00,words:['swabble']},
+  {name:'brown',rgb:[180,50,0],sent:.44,words:['notable','submissive']},
+  {name:'yellow',rgb:[255,255,0],sent:.50,words:['authority']},
+  {name:'purple',rgb:[180,50,255],sent:.68,words:['brave','imaginative']},
 ];
-// normalized sentiment for similarity
-const maxAbs = Math.max(...SEM.map(s=>Math.abs(s.sent)));
-SEM.forEach(s=>s.sentN = maxAbs ? (s.sent/maxAbs) : 0);
+const maxAbs=Math.max(...SEM.map(s=>Math.abs(s.sent)));
+SEM.forEach(s=>s.sentN=maxAbs?(s.sent/maxAbs):0);
 
-/* ---------- similarity + next-state (magnetism) ---------- */
-function similarity(i,j,alpha=0.6){
-  const ds = Math.abs(SEM[i].sentN - SEM[j].sentN);
-  const sentSim = 1 - ds;                    // [0..1]
-  const wordSim = jaccard(SEM[i].words, SEM[j].words);
-  return alpha*sentSim + (1-alpha)*wordSim;  // [0..1]
-}
-function neutralIdx(){
-  const set = new Set(['grey','gray','white','nude','beige']);
-  let idx = SEM.map((c,i)=>set.has(c.name)?i:-1).filter(i=>i>=0);
-  if(!idx.length){
-    const order = SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
-    idx = order.slice(0,5);
-  }
-  return idx;
-}
-function chooseNext(cur, charge, rng){
-  const sims = SEM.map((_,j)=> similarity(cur,j));
-  const dist = sims.map(s=>1-Math.max(0,Math.min(1,s)));
-  const attr = dist.map((d,k)=> k===cur ? 0 : charge/Math.max(d,1e-3));
-  const wSum = attr.reduce((a,b)=>a+Math.max(0,b),0);
-  if(wSum===0) return Math.floor(rng()*SEM.length);
-  let r = rng()*wSum;
-  for(let j=0;j<attr.length;j++){
-    r -= Math.max(0,attr[j]);
-    if(r<=0) return j;
-  }
-  return SEM.length-1;
-}
-
-/* ---------- generator ---------- */
-function generate({length=11, seed=7, mass=0.15, voltage=0.2, charge=1.45, nullTime=0.65, startColor='' }={}){
-  const rng = seededGen(seed);
-  let start = SEM.findIndex(c=>c.name===String(startColor).trim().toLowerCase());
-  if(start<0){
-    // closest to neutral (= min |sentN|)
-    start = SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1])[0][0];
-  }
-  const neutrals = neutralIdx();
-  const seq = [];
-  let cur = start;
-
-  for(let t=0;t<length;t++){
-    const row = SEM[cur];
-    const item = {
-      t, name: row.name,
-      base_rgb: row.rgb.slice(),
-      rgb: applyMass(row.rgb, mass),
-      sentiment: row.sent,
-      words: row.words
-    };
-    seq.push(item);
-
-    // Null time (rest)
-    const pRest = nullTime * (1 - Math.abs(row.sentN));
-    if(rng() < pRest){
-      const ni = neutrals[Math.floor(rng()*neutrals.length)];
-      const nrow = SEM[ni];
-      seq.push({
-        t: t+0.5, name: nrow.name,
-        base_rgb: nrow.rgb.slice(),
-        rgb: applyMass(nrow.rgb, mass*0.2),
-        sentiment: nrow.sent,
-        words: nrow.words,
-        rest: true
-      });
-    }
-
-    // magnetism step (voltage nudges charge)
-    cur = chooseNext(cur, charge*(1+0.4*voltage), rng);
-  }
+function similarity(i,j,alpha=.6){ const ds=Math.abs(SEM[i].sentN-SEM[j].sentN); return alpha*(1-ds)+(1-alpha)*jaccard(SEM[i].words,SEM[j].words); }
+function neutralIdx(){ const set=new Set(['grey','gray','white','nude','beige']); let idx=SEM.map((c,i)=>set.has(c.name)?i:-1).filter(i=>i>=0); if(!idx.length){ idx=SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1]).map(x=>x[0]).slice(0,5); } return idx; }
+function chooseNext(cur,charge,rng){ const sims=SEM.map((_,j)=>similarity(cur,j)); const attr=sims.map((s,k)=>k===cur?0:charge/Math.max(1-s,1e-3)); const wSum=attr.reduce((a,b)=>a+Math.max(0,b),0); if(!wSum) return Math.floor(rng()*SEM.length); let r=rng()*wSum; for(let j=0;j<attr.length;j++){ r-=Math.max(0,attr[j]); if(r<=0) return j; } return SEM.length-1; }
+function generate({length=11,seed=7,mass=.15,voltage=.2,charge=1.45,nullTime=.65,startColor=''}={}){
+  const rng=seededGen(seed); let start=SEM.findIndex(c=>c.name===String(startColor).trim().toLowerCase()); if(start<0) start=SEM.map((c,i)=>[i,Math.abs(c.sentN)]).sort((a,b)=>a[1]-b[1])[0][0]; const neutrals=neutralIdx(); const seq=[]; let cur=start;
+  for(let t=0;t<length;t++){ const row=SEM[cur]; seq.push({t,name:row.name,rgb:applyMass(row.rgb,mass),sentiment:row.sent,words:row.words}); const pRest=nullTime*(1-Math.abs(row.sentN)); if(rng()<pRest){ const ni=neutrals[Math.floor(rng()*neutrals.length)]; const nr=SEM[ni]; seq.push({t:t+.5,name:nr.name,rgb:applyMass(nr.rgb,mass*.2),sentiment:nr.sent,words:nr.words,rest:true}); } cur=chooseNext(cur,charge*(1+.4*voltage),rng); }
   return seq;
 }
 
-/* ---------- UI wiring ---------- */
-const el = id => document.getElementById(id);
-const seqEl = el('sequence'), logEl = el('log');
-const mass = el('mass'), voltage = el('voltage'), charge = el('charge'), nulltime = el('nulltime'),
-      len = el('length'), seed = el('seed'), startColor = el('startColor');
-const input = el('oracle-input');
-const genBtn = el('gen'), clrBtn = el('clear'), exportBtn = el('exportJson');
+const el=id=>document.getElementById(id);
+const seqEl=el('sequence'),logEl=el('log');
+const mass=el('mass'),voltage=el('voltage'),charge=el('charge'),nulltime=el('nulltime'),len=el('length'),seed=el('seed'),startColor=el('startColor'),input=el('oracle-input');
 
 function syncVals(){
-  el('massVal').textContent = Number(mass.value).toFixed(2);
-  el('voltageVal').textContent = Number(voltage.value).toFixed(2);
-  el('chargeVal').textContent = Number(charge.value).toFixed(2);
-  el('nullVal').textContent = Number(nulltime.value).toFixed(2);
-  el('lenVal').textContent = String(len.value);
+  el('massVal').textContent=Number(mass.value).toFixed(2);
+  el('voltageVal').textContent=Number(voltage.value).toFixed(2);
+  el('chargeVal').textContent=Number(charge.value).toFixed(2);
+  el('nullVal').textContent=Number(nulltime.value).toFixed(2);
+  el('lenVal').textContent=String(len.value);
 }
-['input','change'].forEach(evt=>{
-  [mass,voltage,charge,nulltime,len].forEach(c=>c.addEventListener(evt, syncVals));
-});
+['input','change'].forEach(e=>[mass,voltage,charge,nulltime,len].forEach(c=>c.addEventListener(e,syncVals)));
 syncVals();
 
-let lastSeq = null;
-
+let lastSeq=null;
 function render(seq){
-  lastSeq = seq;
-  // grid size from sequence length
-  const steps = seq.length;
-  const cols = Math.max(11, steps);
-  seqEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  seqEl.innerHTML = '';
-
+  lastSeq=seq;
+  seqEl.style.gridTemplateColumns=`repeat(${Math.max(11,seq.length)},1fr)`;
+  seqEl.innerHTML='';
   seq.forEach((s,i)=>{
-    const cell = document.createElement('div');
-    cell.style.height = '76px';
-    cell.style.borderRadius = '10px';
-    cell.style.border = '1px solid var(--border)';
-    cell.style.background = hex(s.rgb);
-    cell.title = `${i+1} — ${s.name}${s.rest?' (rest)':''} — RGB ${s.rgb.join(',')} — S ${s.sentiment.toFixed(2)}`;
-    const cap = document.createElement('div');
-    cap.textContent = `${i+1}`;
-    cap.style.fontSize = '12px';
-    cap.style.color = 'var(--text)';
-    cap.style.textAlign = 'center';
-    cap.style.marginTop = '6px';
-    cap.style.textShadow = '0 1px 2px rgba(0,0,0,.35)';
+    const cell=document.createElement('div');
+    cell.className='seq-cell';
+    cell.style.background=hex(s.rgb);
+    cell.title=`${i+1} — ${s.name}${s.rest?' (rest)':''} — S ${s.sentiment.toFixed(2)}`;
+    const cap=document.createElement('span');
+    cap.textContent=i+1;
     cell.appendChild(cap);
     seqEl.appendChild(cell);
   });
-
-  logEl.textContent = seq.slice(0,20).map((s,i)=>
-    `${String(i).padStart(2,'0')} — ${s.name}${s.rest?' (rest)':''} — ${hex(s.rgb)}`).join('\n');
+  logEl.textContent=seq.slice(0,20).map((s,i)=>`${String(i).padStart(2,'0')} — ${s.name}${s.rest?' (rest)':''} — ${hex(s.rgb)}`).join('\n');
 }
-
 function run(){
-  const seedFromText = (txt)=>{
-    let h = 2166136261>>>0;
-    for(let i=0;i<txt.length;i++){ h ^= txt.charCodeAt(i); h = Math.imul(h, 16777619); }
-    return h>>>0;
-  };
-  const seedVal = String(seed.value||'').trim().length ? Number(seed.value) : seedFromText(input.value||'');
-  const seq = generate({
-    length: Number(len.value),
-    seed: seedVal,
-    mass: Number(mass.value),
-    voltage: Number(voltage.value),
-    charge: Number(charge.value),
-    nullTime: Number(nulltime.value),
-    startColor: startColor.value || ''
-  });
-  render(seq);
+  const seedFromText=txt=>{ let h=2166136261>>>0; for(let i=0;i<txt.length;i++){h^=txt.charCodeAt(i);h=Math.imul(h,16777619);} return h>>>0; };
+  const seedVal=String(seed.value||'').trim().length?Number(seed.value):seedFromText(input.value||'');
+  render(generate({length:Number(len.value),seed:seedVal,mass:Number(mass.value),voltage:Number(voltage.value),charge:Number(charge.value),nullTime:Number(nulltime.value),startColor:startColor.value||''}));
 }
-genBtn?.addEventListener('click', run);
-input?.addEventListener('keydown', e=>{ if(e.key==='Enter') run(); });
-clrBtn?.addEventListener('click', ()=>{ seqEl.innerHTML=''; logEl.textContent=''; input.value=''; lastSeq=null; });
-
-exportBtn?.addEventListener('click', ()=>{
-  if(!lastSeq){ logEl.textContent = 'Generate a sequence first.'; return; }
-  const payload = {version:1, engine:'magnetism-to-color(js)', sequence:lastSeq};
-  const s = JSON.stringify(payload, null, 2);
-  // copy to clipboard
+el('gen').addEventListener('click',run);
+input.addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+el('clear').addEventListener('click',()=>{seqEl.innerHTML='';logEl.textContent='';input.value='';lastSeq=null;});
+el('exportJson').addEventListener('click',()=>{
+  if(!lastSeq){logEl.textContent='Generate a sequence first.';return;}
+  const s=JSON.stringify({version:1,engine:'magnetism-to-color(js)',sequence:lastSeq},null,2);
   navigator.clipboard?.writeText(s).catch(()=>{});
-  // also download file
-  const blob = new Blob([s], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'lamatriz_sequence.json';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-  logEl.textContent = 'Exported JSON (copied to clipboard + downloaded).';
+  const blob=new Blob([s],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='lamatriz_sequence.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  logEl.textContent='Exported JSON (copied to clipboard + downloaded).';
 });
-
 </script>
-  <section class="grid">
-    <!-- 6 cards as described above -->
-  </section>
-  <section class="cta-band">
-      <h2>Guided by meaning, rooted in story, informed by data. A consulting space for poetic data and practical change.</h2>
-    <a class="btn ghost" href="/physicalmagnetism.html/consulting">Confide in me</a>
-  </section>
-</main>
-
-<footer>
-  <div class="container footer-inner">
-    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
-    <nav id="primaryNav">
-    <div class="subnav">
-      <button class="subnavbtn">Request Service</button>
-      <div class="subnav-content">
-         <a href="/physicalmagnetism.html/consulting" aria-current="page">Consulting</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">More Info</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/api">API</a>
-        <a href="/physicalmagnetism.html/thesis">Thesis</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">Contracts</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/privacy">Privacy</a>
-        <a href="/physicalmagnetism.html/terms">Terms</a>
-        <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">About</button>
-      <div class="subnav-content">
-        <a class="cta" href="/physicalmagnetism.html/socials">Socials</a>
-        <a class="cta" href="/physicalmagnetism.html/contact">Contact</a>
-      </div>
-     </div>
-      </nav>
-    <div class="footer-meta">© <span id="y"></span> Physical Magnetism · </div>
-  </div>
-</footer>
+</body>
+</html>
