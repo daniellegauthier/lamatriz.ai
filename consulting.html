@@ -1,44 +1,572 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Consulting with Physical Magnetism</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Color‑coded navigation for people and organizations. Map moods, memories, and habits into actionable color data with vector math. Coaching, workshops, and organizational change.">
-  <link rel="preload" href="./assets/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <meta property="og:title" content="Physical Magnetism Consulting">
-  <meta property="og:description" content="Turn personal patterns into color‑coded data. Grow with self‑compassion. Redesign wellness by reclaiming from the inside out.">
-  <meta property="og:image" content="https://lamatriz.html/og.png">
-  <meta name="theme-color" content="#0B0B0C">
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"ProfessionalService",
-    "name":"Physical Magnetism Consulting",
-    "url":"https://lamatriz.html/consulting",
-    "description":"Color intelligence consulting: coaching, workshops, and organizational design using semantic color math.",
-    "areaServed":"Global",
-    "sameAs":["https://lamatriz.html/thesis","https://lamatriz.html/api","https://lamatriz.html/oracle"]
+<meta charset="utf-8">
+<title>Consulting — Physical Magnetism</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cybernetic feedback systems for co-liberation. UX design, data sovereignty, and emotional AI for researchers, cooperatives, and governance ecologies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inconsolata:wght@300;400;500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1a1611;
+    --ink-mid:    #3d3730;
+    --ink-light:  #7a6f5e;
+    --paper:      #f4f0e6;
+    --paper-warm: #ede8d8;
+    --rule:       #c8c0ae;
+    --rule-thin:  #ddd6c5;
+    --accent:     #8b3a1c;
+    --accent-2:   #4a6741;
+    --gap:        1px solid var(--rule-thin);
   }
-  </script>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; background: var(--paper); color: var(--ink); scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 300;
+    line-height: 1.6;
+    background: var(--paper);
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 0 2rem;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.2rem;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    text-decoration: none;
+    font-family: 'Inconsolata', monospace;
+    font-size: .75rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .logo img { height: 28px; width: auto; }
+
+  nav { display: flex; gap: 0; }
+  .subnav { position: relative; }
+  .subnavbtn, nav a {
+    background: none;
+    border: none;
+    border-left: var(--gap);
+    font-family: 'Inconsolata', monospace;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    cursor: pointer;
+    padding: .5rem .9rem;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+  }
+  .subnavbtn:hover, nav a:hover { color: var(--ink); }
+  .subnav-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    z-index: 99;
+    min-width: 140px;
+  }
+  .subnav-content a { border-left: none; border-top: var(--gap); }
+  .subnav:hover .subnav-content { display: block; }
+
+  /* ── HERO ────────────────────────────────── */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* Garnier orbit SVG */
+  .orbit-svg {
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .18;
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-size: .68rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 1.6rem;
+  }
+  .hero h1 {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 2rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-body p {
+    font-size: .88rem;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 1.2rem;
+    max-width: 44ch;
+  }
+  .hero-body p strong { font-weight: 700; color: var(--ink); }
+
+  .cta-group { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2rem; }
+  .btn {
+    font-family: 'Inconsolata', monospace;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: .55rem 1.1rem;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    background: none;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    display: inline-block;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .btn.accent { border-color: var(--accent); color: var(--accent); }
+  .btn.accent:hover { background: var(--accent); color: var(--paper); }
+
+  /* ── WHO THIS IS FOR ─────────────────────── */
+  .for-section {
+    border-bottom: 1px solid var(--rule);
+    padding: 3rem 2rem;
+  }
+  .for-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .section-label {
+    font-size: .65rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding-top: .3rem;
+  }
+  .for-body {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-mid);
+  }
+
+  /* ── ROOT IMAGE BAND ─────────────────────── */
+  .root-band {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .root-band img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    filter: sepia(.25) contrast(1.05);
+    opacity: .85;
+  }
+  .root-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(244,240,230,.88) 0%, rgba(244,240,230,.3) 55%, rgba(244,240,230,.0) 100%);
+    display: flex;
+    align-items: center;
+    padding: 3rem;
+  }
+  .root-quote {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 480px;
+  }
+  .root-quote span {
+    display: block;
+    font-family: 'Inconsolata', monospace;
+    font-style: normal;
+    font-size: .65rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-top: 1rem;
+  }
+
+  /* ── MAIN TABLE GRID (Schendel aesthetic) ── */
+  .grid-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .grid-inner { max-width: 1200px; margin: 0 auto; }
+  .grid-header {
+    display: grid;
+    grid-template-columns: 180px 1fr 220px;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--ink);
+    padding: .5rem 0;
+    margin-bottom: 0;
+  }
+  .grid-header span {
+    font-size: .65rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding: 0 .5rem;
+  }
+  .grid-header span:not(:first-child) { border-left: var(--gap); }
+
+  /* THE TABLE */
+  table.pm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .8rem;
+  }
+  table.pm-table th, table.pm-table td {
+    vertical-align: top;
+    padding: .55rem .6rem;
+    border-bottom: var(--gap);
+    border-right: var(--gap);
+    line-height: 1.5;
+  }
+  table.pm-table th {
+    font-weight: 700;
+    font-size: .65rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    background: var(--paper-warm);
+  }
+  table.pm-table tr:last-child td { border-bottom: none; }
+  table.pm-table td:last-child, table.pm-table th:last-child { border-right: none; }
+  table.pm-table tr:hover td { background: rgba(139,58,28,.04); }
+
+  .row-group-label {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    background: var(--paper-warm) !important;
+    padding: .3rem .6rem !important;
+    border-top: 1px solid var(--rule) !important;
+  }
+  .row-group-label td {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+
+  table.pm-table a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: .72rem;
+    letter-spacing: .06em;
+  }
+  table.pm-table a::after { content: " ↗"; font-size: .6rem; }
+  table.pm-table a:hover { text-decoration: underline; }
+
+  .tool-name { font-weight: 500; color: var(--ink); }
+  .tool-desc { font-size: .73rem; color: var(--ink-light); display: block; margin-top: .1rem; }
+
+  /* number col */
+  .n-col {
+    font-size: .62rem;
+    color: var(--rule);
+    font-weight: 700;
+    letter-spacing: .08em;
+    width: 2.5rem;
+    text-align: right;
+    padding-right: .8rem !important;
+    border-right: 1px solid var(--ink-light) !important;
+  }
+
+  /* ── WORK / PORTFOLIO ────────────────────── */
+  .work-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+  .work-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .work-item {
+    padding: 1.8rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+  }
+  .work-item:nth-child(even) { border-right: none; }
+  .work-num {
+    font-size: .62rem;
+    letter-spacing: .15em;
+    color: var(--ink-light);
+    margin-bottom: .5rem;
+  }
+  .work-org {
+    font-family: 'IM Fell English', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: .4rem;
+  }
+  .work-role {
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: .6rem;
+  }
+  .work-desc {
+    font-size: .78rem;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+
+  /* ── SERVICE CARDS ───────────────────────── */
+  .services-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink);
+    margin-top: 2rem;
+  }
+  .service-card {
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--rule);
+  }
+  .service-card:last-child { border-right: none; }
+  .service-num {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .service-card h3 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: .8rem;
+  }
+  .service-card p {
+    font-size: .78rem;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  /* ── WORKSHOPS ───────────────────────────── */
+  .workshop-section {
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .workshop-inner { max-width: 1200px; margin: 0 auto; }
+  .workshop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--ink);
+  }
+  .workshop-item {
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .workshop-item:nth-child(even) { border-right: none; }
+  .workshop-duration {
+    font-size: .62rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .4rem;
+  }
+  .workshop-item h3 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: .8rem;
+  }
+  .workshop-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .3rem .6rem;
+    font-size: .73rem;
+    color: var(--ink-light);
+    margin-bottom: .8rem;
+  }
+  .workshop-meta span::before { content: "— "; }
+
+  /* partner row */
+  .partner-row {
+    border-top: 1px solid var(--rule);
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 1.5rem;
+    font-size: .78rem;
+    color: var(--ink-mid);
+  }
+  .partner-row .section-label { padding-top: 0; }
+
+  /* ── CTA BAND ────────────────────────────── */
+  .cta-band {
+    padding: 5rem 2rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    position: relative;
+  }
+  /* Garnier circle behind CTA */
+  .cta-band::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px; height: 360px;
+    border: 1px solid var(--rule-thin);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .cta-band::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px; height: 160px;
+    border: 1px solid var(--rule-thin);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .cta-band h2 {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-band .cta-group { justify-content: center; position: relative; z-index: 1; }
+
+  /* ── FOOTER ──────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--ink);
+    padding: 1.5rem 2rem;
+    background: var(--paper-warm);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-meta {
+    font-size: .65rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+  footer nav { display: flex; flex-wrap: wrap; gap: 0; }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 800px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .for-inner, .work-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .work-grid, .services-grid, .workshop-grid { grid-template-columns: 1fr; }
+    .service-card, .work-item, .workshop-item { border-right: none; }
+    .orbit-svg { display: none; }
+    .partner-row { grid-template-columns: 1fr; }
+    .grid-header { grid-template-columns: 1fr 1fr; }
+    .grid-header span:last-child { display: none; }
+  }
+
+  /* entrance animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero h1, .hero-body, .hero-label {
+    animation: fadeUp .7s ease both;
+  }
+  .hero-label { animation-delay: .1s; }
+  .hero h1 { animation-delay: .2s; }
+  .hero-body { animation-delay: .35s; }
+</style>
 </head>
 <body>
 
+<!-- ── HEADER ── -->
 <header>
-  <div class="container header-inner">
+  <div class="header-inner">
     <a class="logo" href="/physicalmagnetism.html/">
-      <img src="./assets/img/la matriz root only.png" alt="La Matriz Consulting logo">
+      <img src="./assets/img/la matriz root only.png" alt="Physical Magnetism">
       <span>physicalmagnetism.html</span>
     </a>
-    <div class="navbar">
-    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
-      <nav id="primaryNav">
+    <nav>
       <div class="subnav">
         <button class="subnavbtn">Services</button>
         <div class="subnav-content">
-           <a href="/physicalmagnetism.html/consulting" aria-current="page">Consulting</a>
+          <a href="/physicalmagnetism.html/consulting" aria-current="page">Consulting</a>
         </div>
       </div>
       <div class="subnav">
@@ -59,186 +587,332 @@
       <div class="subnav">
         <button class="subnavbtn">About</button>
         <div class="subnav-content">
-          <a class="cta" href="/physicalmagnetism.html/socials">Socials</a>
-          <a class="cta" href="/physicalmagnetism.html/contact">Contact</a>
+          <a href="/physicalmagnetism.html/socials">Socials</a>
+          <a href="/physicalmagnetism.html/contact">Contact</a>
         </div>
-       </div>
-        </nav>
       </div>
+    </nav>
   </div>
-  </header>
+</header>
 
-<main>
+<!-- ── HERO ── -->
+<section class="hero">
+  <!-- Garnier-style orbit SVG -->
+  <svg class="orbit-svg" width="360" height="400" viewBox="0 0 360 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="180" cy="200" r="120" stroke="#1a1611" stroke-width="0.8"/>
+    <path d="M180 40 Q 320 200 180 360 Q 40 200 180 40" stroke="#1a1611" stroke-width="0.8" fill="none"/>
+    <text x="60" y="203" font-family="Inconsolata,monospace" font-size="9" letter-spacing="6" fill="#1a1611">c o r p s</text>
+    <text x="222" y="203" font-family="Inconsolata,monospace" font-size="9" letter-spacing="6" fill="#1a1611">o r b i t e</text>
+  </svg>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-
-      <!-- Mini teaser card -->
-      <div id="mini-demo" aria-label="Color oracle preview">
-        <div class="meta">Powered by Linguistic Cartography → <a href="/physicalmagnetism.html/thesis">Read the Thesis</a></div>
-        <div class="swatch" role="img" aria-label="Color preview"></div>
-        <div class="meta">I translate words into 4D systems to reveal geometric patterns and beneficial choices. →  <a href="#Tools">Try Them</a></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-label">Powered by Linguistic Cartography</p>
+      <h1>Systems that <em>listen</em> before they sort.</h1>
+    </div>
+    <div class="hero-body">
+      <p>I make <strong>cybernetic feedback systems for bottom-up design</strong> — tools for researchers, cooperatives, governance ecologies, and anyone building toward co-liberation.</p>
+      <p>The work begins with what is actually acting on us, beneath the surface. If you want alignment, don't separate from your senses. The goal is reciprocity.</p>
+      <p>You can get the target outcome with appropriate range awareness. Stop killing what makes you unique. Shift towards resonance.</p>
+      <div class="cta-group">
+        <a class="btn primary" href="mailto:daniellegauthier2028@u.northwestern.edu">Book a Consultation</a>
+        <a class="btn" href="/physicalmagnetism.html/thesis">Read the Thesis</a>
       </div>
     </div>
-  </section>
-
-  <section class="hero">
-   <div class="container">
-     <article class="card" style="grid-column: 1 / -1;">
-       <div class="icon" aria-hidden="true"></div>
-       <h2>Start with a Journal Entry</h2>
-       <p>Let's reduce the amount of time you spend searching for balance. My work asks: what is actually acting on us, beneath the surface?<br>
-        <br>If you want alignment, don't separate from your senses. The goal is reciprocity.
-      </p>
-    <p>I make cybernetic feedback systems for bottom-up design.<br>
-      <br>You can get the target outcome with appropriate range awareness.<br>
-      <br>Stop killing what makes you unique.<br>
-      <br>Shift towards resonance.
-
-      <div class="cta-group" style="margin-top:20px;">
-        <a class="btn primary" href="mailto:daniellegauthier2028@u.northwestern.edu">
-          Book a Consultation
-        </a>
-
-        <a class="btn ghost" href="https://editor.p5js.org/danielle.gauthier6/full/QCKnAGTSh" target="_blank">
-          Create a Personal Pluriverse Composition
-        </a>
-
-        <a class="btn ghost" href="https://editor.p5js.org/danielle.gauthier6/full/ubnJx2fjD" target="_blank">
-          Create a Business Pluriverse Composition
-        </a>
-      </div>
-       </article>
-    </div>
-  </section>
-
-  <!-- Signature Tool -->
-  <section class="grid">
-    <div class="container">
-      <article class="card" style="grid-column: 1 / -1;">
-        <div class="icon" aria-hidden="true"></div>
-        <div class="cell span2">
-  <td>
-  <table class="table-thin" id="Tools">
-    <tr><th><h1>Physical Magnetism Consulting</h1></th><th>a practice of reflection,<br>
-data mapping,<br>
-and entanglement</th><th></th><th></th></tr>
-    <tr><td><h2>Personal Data Study Tools</h2></td><td></td></tr>
-    <tr><td>Womb Journal</td><td><a href="https://editor.p5js.org/danielle.gauthier6/full/UQCgDYk7Y">shed a thought</a></td></tr>
-    <tr><td>Sonic Mirror</td><td><a href="https://editor.p5js.org/danielle.gauthier6/full/MUjGMUcQa">consider revolution</a></td></tr>
-    <tr><td>le retour ouvert (Opened Return)</td><td><a href="https://editor.p5js.org/danielle.gauthier6/full/TD5cWIAyF">follow to open</a></td></tr>
-    <tr><td>Language Entangler</td><td><a href="https://docs.google.com/spreadsheets/d/1f9bLfM0Z-9UA2cAxjXPMOPfu_QTDgPeLNGmZa6vpYf4/edit?usp=sharing">explore a concept</a></td></tr>
-    <tr><td>Poem Generator</td><td><a href="https://docs.google.com/spreadsheets/d/1xY7bdHrH6vYF24ND2mVLuHwfz6rR39mpGlOcW4nv6_Q/edit?usp=sharing">play with data</a></td></tr>
-    <tr><td>Color Dance</td><td><a href="https://editor.p5js.org/danielle.gauthier6/full/LN4763E7e">create a physical womb</a></td></tr>
-    <tr><td>Sound to Color</td><td><a href="https://editor.p5js.org/danielle.gauthier6/full/Rd5ll2FxD">visualize your environment</a></td></tr>
-   <tr><td><h3>Digital Art</h3></td><td></td></tr>
-  <tr><td>
-  education</td><td>journals<br>
-mapping templates<br>
-  zines</td><td></td><td></td></tr>
-  <tr><td>
-  locasitiita zine</td><td><a href="https://drive.google.com/file/d/0B908Tv7dF0djN2IyeFRIYTVneDQ/view?usp=sharing&resourcekey=0-ykbKdmy56IcOqlrNtxfDOA">vol i</a><br>
-<a href="https://drive.google.com/file/d/1Wyc52RCnheQ4eM17soRELqn1sS95nE2w/view?usp=sharing">vol ii</a><br>
- <a href="https://drive.google.com/file/d/1OriPxwPJdP2R1Dx-RV4avvS5fjYZOgGS/view?usp=sharing">vol iii</a></td><td></td><td></td></tr>  
-    <tr><td>
-  destructive proof of utopia</td><td><a href="https://drive.google.com/file/d/1WJAR9msfl7gYGvgrXPlm2n-GSRRZulFZ/view?usp=sharing">Undergraduate Thesis</a></td><td></td><td></td></tr>  
-    <tr><td><h2>Contact to Book an Event</h2></td><td><img src="./assets/img/geometric mapping.jpeg" alt="Geometric Mapping Example" width="140" height="140" style="object-fit:cover; width:140px; height:140px;"></td></tr>
-    <tr><td><h3>Self Entanglement</h3></td><td>2 hour integrative workshop</td><td></td><td></td></tr>
-  <tr><td>energetic asana movement<br>
-journaling<br>
-sensing<br>
-mapping</td><td>ethnography<br>
-yoga asana<br>
-meditation<br>
-poetry</td><td></td><td></td></tr>
-  <tr><td><h3>Magnetic Geometry</h3></td><td>30 minute reflection workshop</td></tr>
-  <tr><td>simple drawing<br>
-geometry<br>
-language cartography</td><td>visualizing patterns in<br>
-online + offline life</td><td></td><td></td></tr>
-  <tr><td><h3>Partner & Host</h3></td><td>community events</td></tr>
-  <tr><td>yoga studios<br>
-wellness spaces</td><td>libraries<br>
-community centers<br>
-art spaces</td><td></td><td></td></tr>
-  </table>
-
-      </article>
-    </div>
-  </section>
-
-<section class="grid">
-  <div class="container">
-    <article class="card">
-      <h3>Emotional AI</h3>
-      <p>Model design, architectures, and evaluation frameworks for chromatic semantic systems.</p>
-    </article>
-    <article class="card">
-      <h3>Color Geometry</h3>
-      <p>Semantic mapping, clustering, sequence design, and symbolic reasoning UX.</p>
-    </article>
-    <article class="card">
-      <h3>Data Sovereignty</h3>
-      <p>Decentralized data architectures, consent practices, and privacy rituals.</p>
-    </article>
   </div>
 </section>
 
+<!-- ── WHO THIS IS FOR ── -->
+<section class="for-section">
+  <div class="for-inner">
+    <span class="section-label">For</span>
+    <p class="for-body">
+      Researchers, cooperatives, governance designers, and community organizers who want tools that center relational intelligence and bottom-up design. For groups demilitarizing education, building consent-based data architectures, and designing with communities rather than for them.
+    </p>
+  </div>
+</section>
+
+<!-- ── ROOT IMAGE ── -->
+<div class="root-band">
+  <img src="./assets/img/root.jpeg" alt="Decomposed root system radiating outward from a stump in red mulch">
+  <div class="root-overlay">
+    <blockquote class="root-quote">
+      What is actually acting on us, beneath the surface?
+      <span>— The entry point of all practice</span>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ── TOOLS TABLE ── -->
+<section class="grid-section" id="Tools">
+  <div class="grid-inner">
+    <div class="grid-header">
+      <span>Physical Magnetism</span>
+      <span>a practice of reflection, data mapping, and entanglement</span>
+      <span>entry points</span>
+    </div>
+
+    <table class="pm-table">
+      <thead>
+        <tr>
+          <th class="n-col">№</th>
+          <th>Tool</th>
+          <th>Description</th>
+          <th>Enter</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Personal Data Study -->
+        <tr class="row-group-label">
+          <td class="n-col"></td>
+          <td colspan="3">Personal Data Study Tools</td>
+        </tr>
+        <tr>
+          <td class="n-col">01</td>
+          <td><span class="tool-name">Womb Journal</span></td>
+          <td><span class="tool-desc">Somatic journaling interface. Shed a thought into data.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/UQCgDYk7Y" target="_blank">shed a thought</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">02</td>
+          <td><span class="tool-name">Sonic Mirror</span></td>
+          <td><span class="tool-desc">Sound-based reflection. Consider revolution through listening.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/MUjGMUcQa" target="_blank">consider revolution</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">03</td>
+          <td><span class="tool-name">le retour ouvert</span><br><span class="tool-desc" style="font-style:italic">Opened Return</span></td>
+          <td><span class="tool-desc">Navigate opening through iterative return.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/TD5cWIAyF" target="_blank">follow to open</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">04</td>
+          <td><span class="tool-name">Language Entangler</span></td>
+          <td><span class="tool-desc">Concept mapping through semantic entanglement.</span></td>
+          <td><a href="https://docs.google.com/spreadsheets/d/1f9bLfM0Z-9UA2cAxjXPMOPfu_QTDgPeLNGmZa6vpYf4/edit?usp=sharing" target="_blank">explore a concept</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">05</td>
+          <td><span class="tool-name">Poem Generator</span></td>
+          <td><span class="tool-desc">Data becomes poem. Play with patterned language.</span></td>
+          <td><a href="https://docs.google.com/spreadsheets/d/1xY7bdHrH6vYF24ND2mVLuHwfz6rR39mpGlOcW4nv6_Q/edit?usp=sharing" target="_blank">play with data</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">06</td>
+          <td><span class="tool-name">Color Dance</span></td>
+          <td><span class="tool-desc">Create a physical womb of chromatic meaning.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/LN4763E7e" target="_blank">create a physical womb</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">07</td>
+          <td><span class="tool-name">Sound to Color</span></td>
+          <td><span class="tool-desc">Visualize your sonic environment as chromatic data.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/Rd5ll2FxD" target="_blank">visualize your environment</a></td>
+        </tr>
+
+        <!-- Pluriverse -->
+        <tr class="row-group-label">
+          <td class="n-col"></td>
+          <td colspan="3">Pluriverse Composition</td>
+        </tr>
+        <tr>
+          <td class="n-col">08</td>
+          <td><span class="tool-name">Personal Pluriverse</span></td>
+          <td><span class="tool-desc">Map your individual field of forces and values.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/QCKnAGTSh" target="_blank">compose personal</a></td>
+        </tr>
+        <tr>
+          <td class="n-col">09</td>
+          <td><span class="tool-name">Business Pluriverse</span></td>
+          <td><span class="tool-desc">Organizational field mapping for collective navigation.</span></td>
+          <td><a href="https://editor.p5js.org/danielle.gauthier6/full/ubnJx2fjD" target="_blank">compose business</a></td>
+        </tr>
+
+        <!-- Education -->
+        <tr class="row-group-label">
+          <td class="n-col"></td>
+          <td colspan="3">Digital Art &amp; Education</td>
+        </tr>
+        <tr>
+          <td class="n-col">10</td>
+          <td><span class="tool-name">locasitiita zine</span></td>
+          <td><span class="tool-desc">Journals, mapping templates, zines for somatic navigation.</span></td>
+          <td>
+            <a href="https://drive.google.com/file/d/0B908Tv7dF0djN2IyeFRIYTVneDQ/view?usp=sharing&resourcekey=0-ykbKdmy56IcOqlrNtxfDOA" target="_blank">vol i</a> &nbsp;
+            <a href="https://drive.google.com/file/d/1Wyc52RCnheQ4eM17soRELqn1sS95nE2w/view?usp=sharing" target="_blank">vol ii</a> &nbsp;
+            <a href="https://drive.google.com/file/d/1OriPxwPJdP2R1Dx-RV4avvS5fjYZOgGS/view?usp=sharing" target="_blank">vol iii</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="n-col">11</td>
+          <td><span class="tool-name">destructive proof of utopia</span></td>
+          <td><span class="tool-desc">Undergraduate thesis. Foundation of the practice.</span></td>
+          <td><a href="https://drive.google.com/file/d/1WJAR9msfl7gYGvgrXPlm2n-GSRRZulFZ/view?usp=sharing" target="_blank">read thesis</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── WORK / PORTFOLIO ── -->
+<section class="work-section">
+  <div class="work-inner">
+    <span class="section-label">Selected Work</span>
+    <div>
+      <div class="work-grid">
+        <div class="work-item">
+          <div class="work-num">01 — 2024</div>
+          <div class="work-org">MetaGov</div>
+          <div class="work-role">UX Design — Governance Ecologies</div>
+          <p class="work-desc">Demilitarization of education and governance ecology design. Contributed bottom-up UX frameworks for decentralized governance research and community coordination infrastructure.</p>
+        </div>
+        <div class="work-item">
+          <div class="work-num">02 — 2024</div>
+          <div class="work-org">University of Colorado</div>
+          <div class="work-role">UX Design — Research Systems</div>
+          <p class="work-desc">UX design for governance ecology research contexts. Spatial and data interface work supporting community-centered scholarship and participatory methodologies.</p>
+        </div>
+        <div class="work-item" style="border-bottom:none;">
+          <div class="work-num">03 — Ongoing</div>
+          <div class="work-org">Physical Magnetism</div>
+          <div class="work-role">Tool Development — Chromatic Intelligence</div>
+          <p class="work-desc">Building the Linguistic Cartography API, Pluriverse Composition tools, and the full suite of personal data study instruments. Research into fractional calculus, quaternion maps, and memory as design material.</p>
+        </div>
+        <div class="work-item" style="border-bottom:none;">
+          <div class="work-num">→</div>
+          <div class="work-org">Your Organization</div>
+          <div class="work-role">Open for aligned collaboration</div>
+          <p class="work-desc">Cooperatives, civic tech groups, demilitarized education spaces, mutual aid infrastructure, and governance research. <a href="mailto:daniellegauthier2028@u.northwestern.edu" style="color:var(--accent);text-decoration:none;">Start a conversation →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICE AREAS ── -->
+<section class="services-section">
+  <div class="services-inner">
+    <div style="display:grid; grid-template-columns: 180px 1fr; gap: 2rem; align-items:baseline; margin-bottom:0;">
+      <span class="section-label">Practice Areas</span>
+      <span style="font-size:.78rem; color:var(--ink-light);">Three interlocking domains, available separately or in combination.</span>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <h3>Emotional AI</h3>
+        <p>Model design, architectures, and evaluation frameworks for chromatic semantic systems. Building AI that listens to relational and affective signal, not just token prediction.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <h3>Color Geometry</h3>
+        <p>Semantic mapping, clustering, sequence design, and symbolic reasoning UX. Translating words and states into four-dimensional data structures that reveal pattern.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <h3>Data Sovereignty</h3>
+        <p>Decentralized data architectures, consent practices, and privacy rituals. Design for communities who own their own data and their own story.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORKSHOPS ── -->
+<section class="workshop-section">
+  <div class="workshop-inner">
+    <div style="display:grid; grid-template-columns: 180px 1fr; gap: 2rem; align-items:baseline; margin-bottom:0;">
+      <span class="section-label">Events</span>
+      <span style="font-size:.78rem; color:var(--ink-light);">Contact to book. Available at yoga studios, libraries, community centers, art spaces, and online.</span>
+    </div>
+    <div class="workshop-grid">
+      <div class="workshop-item">
+        <div class="workshop-duration">2 hours — Integrative</div>
+        <h3>Self Entanglement</h3>
+        <div class="workshop-meta">
+          <span>energetic asana movement</span>
+          <span>ethnography</span>
+          <span>journaling</span>
+          <span>yoga asana</span>
+          <span>sensing</span>
+          <span>meditation</span>
+          <span>mapping</span>
+          <span>poetry</span>
+        </div>
+        <a class="btn accent" href="mailto:daniellegauthier2028@u.northwestern.edu">Book this workshop</a>
+      </div>
+      <div class="workshop-item">
+        <div class="workshop-duration">30 minutes — Reflection</div>
+        <h3>Magnetic Geometry</h3>
+        <div class="workshop-meta">
+          <span>simple drawing</span>
+          <span>pattern visualization</span>
+          <span>geometry</span>
+          <span>online + offline life</span>
+          <span>language cartography</span>
+          <span>navigation</span>
+        </div>
+        <a class="btn accent" href="mailto:daniellegauthier2028@u.northwestern.edu">Book this workshop</a>
+      </div>
+    </div>
+    <div class="partner-row">
+      <span class="section-label">Partner &amp; Host</span>
+      <div>
+        <div style="font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-light); margin-bottom:.4rem;">Wellness Spaces</div>
+        yoga studios &nbsp;·&nbsp; wellness centers
+      </div>
+      <div>
+        <div style="font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-light); margin-bottom:.4rem;">Community &amp; Cultural</div>
+        libraries &nbsp;·&nbsp; community centers &nbsp;·&nbsp; art spaces
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
 <section class="cta-band">
-  <div class="container">
-    <h2>Ready to build a chromatic intelligence system?</h2>
-    <div class="actions">
-      <a class="btn primary" href="mailto:daniellegauthier2028@u.northwestern.edu">Start a project</a>
-      <a class="btn ghost" href="/physicalmagnetism.html/thesis">Read the thesis</a>
-    </div>
+  <h2>Ready to build a chromatic intelligence system?</h2>
+  <div class="cta-group">
+    <a class="btn primary" href="mailto:daniellegauthier2028@u.northwestern.edu">Start a project</a>
+    <a class="btn" href="/physicalmagnetism.html/thesis">Read the thesis</a>
   </div>
 </section>
 
-</main>
-
+<!-- ── FOOTER ── -->
 <footer>
-  <div class="container footer-inner">
-    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
-    <div class="navbar">
-    <button id="menuToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>
-    <nav id="primaryNav">
-    <div class="subnav">
-      <button class="subnavbtn">Request Service</button>
-      <div class="subnav-content">
-         <a href="/physicalmagnetism.html/consulting" aria-current="page">Consulting</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">More Info</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/api">API</a>
-        <a href="/physicalmagnetism.html/thesis">Thesis</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">Contracts</button>
-      <div class="subnav-content">
-        <a href="/physicalmagnetism.html/privacy">Privacy</a>
-        <a href="/physicalmagnetism.html/terms">Terms</a>
-        <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
-      </div>
-    </div>
-    <div class="subnav">
-      <button class="subnavbtn">About</button>
-      <div class="subnav-content">
-        <a class="cta" href="/physicalmagnetism.html/socials">Socials</a>
-        <a class="cta" href="/physicalmagnetism.html/contact">Contact</a>
-      </div>
-     </div>
-      </nav>
+  <div class="footer-inner">
     <div class="footer-meta">© <span id="y"></span> Physical Magnetism</div>
+    <nav>
+      <div class="subnav">
+        <button class="subnavbtn">Services</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/consulting">Consulting</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Info</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/api">API</a>
+          <a href="/physicalmagnetism.html/thesis">Thesis</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">Contracts</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/privacy">Privacy</a>
+          <a href="/physicalmagnetism.html/terms">Terms</a>
+          <a href="/physicalmagnetism.html/gnh-work-statement">Work Statement</a>
+        </div>
+      </div>
+      <div class="subnav">
+        <button class="subnavbtn">About</button>
+        <div class="subnav-content">
+          <a href="/physicalmagnetism.html/socials">Socials</a>
+          <a href="/physicalmagnetism.html/contact">Contact</a>
+        </div>
+      </div>
+    </nav>
   </div>
 </footer>
 
-<script>
-document.getElementById('y').textContent = new Date().getFullYear();
-</script>
-
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
